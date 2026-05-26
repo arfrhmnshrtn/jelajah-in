@@ -28,4 +28,9 @@ export class BookingController {
   ) {
     return this.bookingService.create(req.user.sub, createBookingDto);
   }
+
+  @Get()
+  findAll() {
+    return this.bookingService.findAll();
+  }
 }

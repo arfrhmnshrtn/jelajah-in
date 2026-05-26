@@ -65,4 +65,15 @@ export class BookingService {
       redirectUrl: transaction.redirect_url,
     };
   }
+
+  async findAll() {
+    // return `This action returns all booking`;
+    const bookings = await this.prisma.booking.findMany();
+    return {
+      success: true,
+      message: 'Data booking berhasil ditemukan',
+      metadata: { status: HttpStatus.OK, count: bookings.length },
+      data: bookings,
+    };
+  }
 }
