@@ -76,4 +76,67 @@ export class BookingService {
       data: bookings,
     };
   }
+
+  async cancel(id: number, user: { sub: number; role: string }) {
+    // 🔹 cek dulu booking
+    const booking = await this.prisma.booking.findUnique({
+      where: { id },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking tidak ditemukan');
+    }
+
+    if (booking.userId !== user.sub && user.role !== 'ADMIN') {
+      throw new ForbiddenException('Anda tidak berhak menghapus booking ini');
+    }
+
+    if (booking.status === 'CANCELED') {
+      return {
+        success: false,
+        message: 'Booking sudah dibatalkan!',
+        data: booking,
+      };
+    }
+
+    // 🔹 hanya boleh hapus jika masih PENDING
+    if (booking.status !== 'PENDING') {
+      return {
+        success: false,
+        message: 'Booking tidak bisa dibatalkan!',
+      };
+    }
+
+    // 🔹 baru delete
+    await this.prisma.booking.update({
+      where: { id },
+      data: {
+        status: 'CANCELED',
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Booking berhasil dibatalkan',
+      data: booking,
+    };
+  }
+
+  async findByUser(userId: number) {
+    const data = await this.prisma.booking.findMany({
+      where: { userId },
+      include: {
+        package: true,
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Berhasil mengambil riwayat booking',
+      metadata: {
+        count: data.length,
+      },
+      data,
+    };
+  }
 }

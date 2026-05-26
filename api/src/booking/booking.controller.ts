@@ -33,4 +33,16 @@ export class BookingController {
   findAll() {
     return this.bookingService.findAll();
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  findMyBookings(@Req() req) {
+    return this.bookingService.findByUser(req.user.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  cancel(@Param('id') id: string, @Req() req) {
+    return this.bookingService.cancel(+id, req.user);
+  }
 }
