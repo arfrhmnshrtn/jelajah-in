@@ -13,6 +13,13 @@ import HomeScreen from '../screens/main/HomeScreen';
 import FavoriteScreen from '../screens/main/FavoriteScreen';
 import ProfileScreen from '../screens/main/ProfileScreen';
 
+// 🟢 TAMBAHAN: Import Screen Baru Kita
+import TicketScreen from '../screens/main/TicketScreen';
+import DetailScreen from '../screens/main/DetailScreen';
+import HistoryScreen from '../screens/main/HistoryScreen';
+import BookingScreen from '../screens/main/BookingScreen';
+import SuccessScreen from '../screens/main/SuccessScreen';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -46,6 +53,8 @@ function MainTabs() {
             iconName = 'home';
           } else if (route.name === 'Disukai') {
             iconName = 'heart';
+          } else if (route.name === 'Tiket') {
+            iconName = 'ticket'; // 🟢 TAMBAHAN: Ikon untuk tab Tiket
           } else if (route.name === 'Profil') {
             iconName = 'person';
           }
@@ -60,6 +69,8 @@ function MainTabs() {
     >
       <Tab.Screen name="Beranda" component={HomeScreen} />
       <Tab.Screen name="Disukai" component={FavoriteScreen} />
+      {/* 🟢 TAMBAHAN: Masukkan TicketScreen ke menu bawah */}
+      <Tab.Screen name="Tiket" component={TicketScreen} />
       <Tab.Screen name="Profil" component={ProfileScreen} />
     </Tab.Navigator>
   );
@@ -82,6 +93,13 @@ export default function AppNavigator() {
         
         {/* Halaman Utama (Setelah Login akan masuk ke Menu Bawah) */}
         <Stack.Screen name="Home" component={MainTabs} /> 
+
+        {/* 🟢 TAMBAHAN: Halaman Fitur Transaksi & Detail */}
+        <Stack.Screen name="Detail" component={DetailScreen} />
+        <Stack.Screen name="Booking" component={BookingScreen} />
+        <Stack.Screen name="Success" component={SuccessScreen} />
+        <Stack.Screen name="History" component={HistoryScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
