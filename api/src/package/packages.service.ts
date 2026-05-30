@@ -7,8 +7,6 @@ import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception
 @Injectable()
 export class PackagesService {
   async create(createPackageDto: CreatePackageDto) {
-    // return 'This action adds a new package';
-
     await new PrismaService().package.create({
       data: {
         name: createPackageDto.name,
@@ -29,7 +27,6 @@ export class PackagesService {
   }
 
   async findAll() {
-    // return `This action returns all packages`;
     const data = await new PrismaService().package.findMany();
     return {
       success: true,
@@ -43,7 +40,6 @@ export class PackagesService {
   }
 
   async findOne(id: number) {
-    // return `This action returns a #${id} package`;
     const data = await new PrismaService().package.findUnique({
       where: { id },
     });
@@ -59,8 +55,6 @@ export class PackagesService {
   }
 
   async update(id: number, updatePackageDto: UpdatePackageDto) {
-    // return `This action updates a #${id} package`;
-
     try {
       const existingPackage = await new PrismaService().package.findUnique({
         where: { id },
@@ -88,7 +82,7 @@ export class PackagesService {
 
       return {
         success: true,
-        message: 'Paket berhasil diperbarui',
+        message: 'Paket berhasil dengan id ' + id + ' diperbarui',
         metadata: {
           status: HttpStatus.OK,
         },
@@ -116,7 +110,7 @@ export class PackagesService {
 
       return {
         success: true,
-        message: 'Paket berhasil dihapus',
+        message: 'Paket berhasil dengan id ' + id + ' dihapus',
         metadata: {
           status: HttpStatus.OK,
         },
