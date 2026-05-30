@@ -15,12 +15,7 @@ export class BookingService {
     private midtransService: MidtransService,
   ) {}
 
-  async create(
-    userId: number,
-    // name: string,
-    // email: string,
-    createBookingDto: CreateBookingDto,
-  ) {
+  async create(userId: number, createBookingDto: CreateBookingDto) {
     // ambil data package
     const paket = await this.prisma.package.findUnique({
       where: { id: createBookingDto.packageId },
@@ -78,7 +73,7 @@ export class BookingService {
   }
 
   async cancel(id: number, user: { sub: number; role: string }) {
-    // 🔹 cek dulu booking
+    // cek dulu booking
     const booking = await this.prisma.booking.findUnique({
       where: { id },
     });
@@ -99,11 +94,11 @@ export class BookingService {
       };
     }
 
-    // 🔹 hanya boleh hapus jika masih PENDING
+    // hanya boleh hapus jika masih PENDING
     if (booking.status !== 'PENDING') {
       return {
         success: false,
-        message: 'Booking tidak bisa dibatalkan!',
+        message: 'Booking tidak bisa dibatalkan karena sudah diproses!',
       };
     }
 
