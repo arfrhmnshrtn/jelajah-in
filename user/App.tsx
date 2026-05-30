@@ -14,8 +14,12 @@ import HomeScreen from './src/screens/main/HomeScreen';
 import FavoriteScreen from './src/screens/main/FavoriteScreen';
 import ProfileScreen from './src/screens/main/ProfileScreen';
 import DetailScreen from './src/screens/main/DetailScreen';
-import BookingScreen from './src/screens/main/BookingScreen'; // Halaman Pemesanan
-import SuccessScreen from './src/screens/main/SuccessScreen'; // Halaman Sukses
+import BookingScreen from './src/screens/main/BookingScreen'; 
+import SuccessScreen from './src/screens/main/SuccessScreen'; 
+import TicketScreen from './src/screens/main/TicketScreen';
+
+// 🟢 TAMBAHAN: Import HistoryScreen di sini!
+import HistoryScreen from './src/screens/main/HistoryScreen';
 
 // Inisialisasi Navigator
 const Stack = createNativeStackNavigator();
@@ -33,13 +37,11 @@ function BottomTabs() {
         headerShown: false, 
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === 'HomeTab') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'FavoriteTab') {
-            iconName = focused ? 'heart' : 'heart-outline';
-          } else if (route.name === 'ProfilTab') {
-            iconName = focused ? 'person' : 'person-outline';
-          }
+          if (route.name === 'HomeTab') iconName = focused ? 'home' : 'home-outline';
+          else if (route.name === 'TicketTab') iconName = focused ? 'ticket' : 'ticket-outline';
+          else if (route.name === 'FavoriteTab') iconName = focused ? 'heart' : 'heart-outline';
+          else if (route.name === 'ProfilTab') iconName = focused ? 'person' : 'person-outline';
+          
           return <Ionicons name={iconName as any} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#38BDF8',
@@ -55,6 +57,7 @@ function BottomTabs() {
       })}
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} options={{ tabBarLabel: 'Beranda' }} />
+      <Tab.Screen name="TicketTab" component={TicketScreen} options={{ tabBarLabel: 'Tiket Saya' }} />
       <Tab.Screen name="FavoriteTab" component={FavoriteScreen} options={{ tabBarLabel: 'Favorit' }} />
       <Tab.Screen name="ProfilTab" component={ProfileScreen} options={{ tabBarLabel: 'Profil' }} />
     </Tab.Navigator>
@@ -88,6 +91,9 @@ export default function App() {
         <Stack.Screen name="Detail" component={DetailScreen} options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="Booking" component={BookingScreen} options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="Success" component={SuccessScreen} options={{ animation: 'fade' }} />
+        
+        {/* 🟢 TAMBAHAN: Daftarkan HistoryScreen di sini! */}
+        <Stack.Screen name="History" component={HistoryScreen} options={{ animation: 'slide_from_right' }} />
 
       </Stack.Navigator>
     </NavigationContainer>

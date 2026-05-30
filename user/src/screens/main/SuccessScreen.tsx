@@ -27,8 +27,8 @@ export default function SuccessScreen({ navigation }: any) {
       <View style={styles.buttonWrapper}>
         <CustomButton 
           title="Kembali ke Beranda" 
-          // UBAH BARIS INI: Gunakan navigate langsung ke Home
-          onPress={() => navigation.navigate('Home')} 
+          // 🚀 UBAH KE REPLACE: Agar user tidak bisa "back" ke halaman ini
+          onPress={() => navigation.replace('Home')} 
         />
       </View>
     </View>

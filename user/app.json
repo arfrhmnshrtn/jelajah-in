@@ -4,11 +4,11 @@
     "slug": "jelajah-in",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/iconjin-jukebox-bg-removed.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/iconjin-jukebox-bg-removed.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,10 +21,34 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.geevanalva.jelajahin"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "fd227491-dbd3-4fcb-959a-328d7b7d6037"
+      }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      "expo-web-browser",
+      "@react-native-community/datetimepicker"
+    ],
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/fd227491-dbd3-4fcb-959a-328d7b7d6037"
     }
   }
 }
