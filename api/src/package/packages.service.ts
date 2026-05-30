@@ -88,7 +88,7 @@ export class PackagesService {
 
       return {
         success: true,
-        message: 'Paket berhasil diupdate',
+        message: 'Paket berhasil diperbarui',
         metadata: {
           status: HttpStatus.OK,
         },
