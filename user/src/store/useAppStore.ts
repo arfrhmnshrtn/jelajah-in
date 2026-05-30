@@ -1,15 +1,27 @@
 import { create } from 'zustand';
 
-// 1. Definisikan tipe data User (sekarang ada profilePictureUrl)
+// 1. Definisikan tipe data User
 export interface User {
   id: string;
   name: string;
   email: string;
   password?: string;
-  profilePictureUrl?: string; // Tambahan untuk foto beneran
+  profilePictureUrl?: string; 
+  token?: string;
 }
 
-// 2. Definisikan cetak biru Store
+// 2. Definisikan tipe data Tiket untuk Riwayat Pemesanan
+export interface Ticket {
+  id: string;
+  destinationName: string;
+  location: string;
+  image: string;
+  pax: number;
+  totalPrice: number;
+  bookingDate: string;
+}
+
+// 3. Definisikan cetak biru Store
 interface AppState {
   isDarkMode: boolean;
   toggleDarkMode: () => void;
@@ -17,8 +29,8 @@ interface AppState {
   // State Auth Nyata
   registeredUsers: User[];
   currentUser: User | null;
-  register: (user: Omit<User, 'id'>) => void; // Register tanpa ID
-  login: (email: string, password?: string) => boolean;
+  register: (user: Omit<User, 'id'>) => void;
+  login: (userData: User) => void;
   logout: () => void;
   
   // State Favorit
@@ -26,10 +38,14 @@ interface AppState {
   toggleFavorite: (id: string) => void;
   
   // State Profile
-  updateProfile: (data: Partial<Omit<User, 'id' | 'email'>>) => void; // Update hanya Nama & Foto
+  updateProfile: (data: Partial<Omit<User, 'id' | 'email'>>) => void;
+
+  // State Tiket (Riwayat Pemesanan) Baru
+  myTickets: Ticket[];
+  addTicket: (ticket: Omit<Ticket, 'id' | 'bookingDate'>) => void;
 }
 
-// 3. Buat Store-nya
+// 4. Buat Store-nya
 export const useAppStore = create<AppState>((set, get) => ({
   isDarkMode: false,
   toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
@@ -37,23 +53,18 @@ export const useAppStore = create<AppState>((set, get) => ({
   registeredUsers: [],
   currentUser: null,
 
-  // Fungsi Register (Buat ID unik otomatis)
+  // Fungsi Register
   register: (newUser) => set((state) => ({
     registeredUsers: [...state.registeredUsers, { ...newUser, id: Date.now().toString() }]
   })),
 
   // Fungsi Login
-  login: (email, password) => {
-    const user = get().registeredUsers.find(u => u.email === email && u.password === password);
-    if (user) {
-      set({ currentUser: user });
-      return true;
-    }
-    return false;
-  },
+  // GANTI JADI INI:
+  login: (userData) => set({ currentUser: userData }),
 
   logout: () => set({ currentUser: null }),
 
+  // State & Fungsi Favorit
   favoriteIds: [],
   toggleFavorite: (id) => set((state) => ({
     favoriteIds: state.favoriteIds.includes(id)
@@ -61,8 +72,23 @@ export const useAppStore = create<AppState>((set, get) => ({
       : [...state.favoriteIds, id]
   })),
 
-  // Fungsi Update Profil Nyata (Hanya Nama & Foto yang bisa diubah untuk mockup)
+  // Fungsi Update Profil
   updateProfile: (data) => set((state) => ({
     currentUser: state.currentUser ? { ...state.currentUser, ...data } : null
   })),
+
+  // State & Fungsi Tiket Baru
+  myTickets: [],
+  addTicket: (newTicket) => set((state) => {
+    // Membuat tiket baru dengan ID unik dan tanggal pemesanan saat ini
+    const completeTicket: Ticket = {
+      ...newTicket,
+      id: `TIX-${Date.now()}`,
+      bookingDate: new Date().toLocaleDateString('id-ID', {
+        day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      })
+    };
+    // Masukkan tiket baru ke posisi paling atas (terbaru)
+    return { myTickets: [completeTicket, ...state.myTickets] };
+  }),
 }));

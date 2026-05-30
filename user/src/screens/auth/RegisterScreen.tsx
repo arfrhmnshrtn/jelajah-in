@@ -6,7 +6,8 @@ import InputField from '../../components/InputField';
 import CustomButton from '../../components/CustomButton';
 
 export default function RegisterScreen({ navigation }: any) {
-  const { isDarkMode, register } = useAppStore();
+  // Catatan: 'register' dihapus dari useAppStore karena data sekarang disimpan di database server
+  const { isDarkMode } = useAppStore(); 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,22 +22,69 @@ export default function RegisterScreen({ navigation }: any) {
     link: '#38BDF8'
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
+    // Kosongkan pesan setiap kali tombol ditekan
     setMsg({ text: '', type: '' });
+    
+    // 1. Validasi Tidak Boleh Kosong
     if (!name || !email || !password) {
       setMsg({ text: 'Semua kolom wajib diisi!', type: 'error' });
       return;
     }
 
+    // 2. Validasi Format Email
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(email)) {
+      setMsg({ text: 'Format email tidak valid!', type: 'error' });
+      return;
+    }
+
+    // 3. Validasi Minimal Karakter Password
+    if (password.length < 6) {
+      setMsg({ text: 'Kata sandi minimal 6 karakter!', type: 'error' });
+      return;
+    }
+
     setIsLoading(true);
-    setTimeout(() => {
-      register({ name, email, password });
-      setIsLoading(false);
+
+    try {
+      // Menembak API Backend (URL disesuaikan dengan dokumentasi: /auth/register)
+      // Catatan: Pastikan apakah Arief menggunakan awalan /api/ atau langsung /auth/
+      const request = await fetch('http://203.194.115.158:3000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          name: name,
+          email: email, 
+          password: password 
+        }),
+      });
+
+      const response = await request.json();
+
+      // Jika ada error dari server (misal email sudah terpakai)
+      if (!request.ok) {
+        setMsg({ text: response.message || 'Pendaftaran gagal!', type: 'error' });
+        return;
+      }
+
+      // ✅ Kalau sukses
+      console.log('Register success:', response);
+      
+      // Tampilkan teks sukses berwarna hijau
       setMsg({ text: 'Akun berhasil dibuat! Mengalihkan...', type: 'success' });
       
-      // Tunggu 1.5 detik agar user bisa baca pesan sukses, lalu pindah
-      setTimeout(() => navigation.navigate('Login'), 1500);
-    }, 1200);
+      // Tunggu 1.5 detik agar user bisa baca pesan sukses, lalu pindah ke halaman Login
+      setTimeout(() => navigation.replace('Login'), 1500);
+
+    } catch (error) {
+      console.log(error);
+      setMsg({ text: 'Terjadi kesalahan jaringan. Coba lagi!', type: 'error' });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -56,6 +104,7 @@ export default function RegisterScreen({ navigation }: any) {
           <InputField label="Alamat Email" iconName="mail-outline" placeholder="contoh@email.com" value={email} onChangeText={setEmail} autoCapitalize="none" />
           <InputField label="Kata Sandi" iconName="lock-closed-outline" placeholder="Buat kata sandi yang kuat" isPassword={true} value={password} onChangeText={setPassword} />
 
+          {/* Render pesan sukses/error di sini */}
           {msg.text ? (
             <Text style={[styles.msgText, { color: msg.type === 'error' ? '#EF4444' : '#10B981' }]}>{msg.text}</Text>
           ) : null}
