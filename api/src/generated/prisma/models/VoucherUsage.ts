@@ -238,18 +238,18 @@ export type VoucherUsageOrderByWithRelationInput = {
 
 export type VoucherUsageWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  userId?: number
   bookingId?: number
   voucherId_userId_bookingId?: Prisma.VoucherUsageVoucherIdUserIdBookingIdCompoundUniqueInput
   AND?: Prisma.VoucherUsageWhereInput | Prisma.VoucherUsageWhereInput[]
   OR?: Prisma.VoucherUsageWhereInput[]
   NOT?: Prisma.VoucherUsageWhereInput | Prisma.VoucherUsageWhereInput[]
   voucherId?: Prisma.StringFilter<"VoucherUsage"> | string
+  userId?: Prisma.IntFilter<"VoucherUsage"> | number
   usedAt?: Prisma.DateTimeFilter<"VoucherUsage"> | Date | string
   voucher?: Prisma.XOR<Prisma.VoucherScalarRelationFilter, Prisma.VoucherWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   booking?: Prisma.XOR<Prisma.BookingScalarRelationFilter, Prisma.BookingWhereInput>
-}, "id" | "userId" | "bookingId" | "voucherId_userId_bookingId">
+}, "id" | "bookingId" | "voucherId_userId_bookingId">
 
 export type VoucherUsageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

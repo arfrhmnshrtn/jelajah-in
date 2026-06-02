@@ -94,6 +94,8 @@ export const PackageScalarFieldEnum = {
   description: 'description',
   price: 'price',
   location: 'location',
+  latitude: 'latitude',
+  longitude: 'longitude',
   image: 'image',
   createdAt: 'createdAt'
 } as const

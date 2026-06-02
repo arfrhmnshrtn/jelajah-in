@@ -38,6 +38,8 @@ model Package {
   description String
   price       Int
   location    String
+  latitude    Float?
+  longitude   Float?
   image       String
   createdAt   DateTime @default(now())
 

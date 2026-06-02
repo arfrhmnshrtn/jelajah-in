@@ -15,6 +15,8 @@ export class PackagesService {
         description: createPackageDto.description,
         price: createPackageDto.price,
         location: createPackageDto.location,
+        latitude: createPackageDto.latitude,
+        longitude: createPackageDto.longitude,
         image: createPackageDto.image,
       },
     });

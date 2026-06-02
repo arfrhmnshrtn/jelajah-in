@@ -3,5 +3,7 @@ export class CreatePackageDto {
   description: string;
   price: number;
   location: string;
+  latitude: number;
+  longitude: number;
   image: string;
 }
