@@ -11,16 +11,19 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
-import { metadata } from 'reflect-metadata/no-conflict';
+import * as path from 'path';
+import * as fs from 'fs';
+
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   private readonly userSelectFields = {
     id: true,
+    avatar: true,
     name: true,
     email: true,
     role: true,
@@ -182,17 +185,18 @@ export class AuthService {
     userId: number,
     data: UpdateUserDto,
     userPayload: { sub: number; role: string },
+    file?: Express.Multer.File,
   ) {
     const targetId = parseInt(userId as any, 10);
     const requestorId = parseInt(userPayload?.sub as any, 10);
 
     if (targetId !== requestorId && userPayload?.role !== 'ADMIN') {
       throw new ForbiddenException(
-        'Anda tidak diizinkan mengubah data pengguna lain',
+        'Akses ditolak!!',
       );
     }
 
-    const updateData: Partial<UpdateUserDto> = {};
+    const updateData: any = {};
 
     if (data.name) updateData.name = data.name;
     if (data.email) updateData.email = data.email;
@@ -202,9 +206,27 @@ export class AuthService {
       updateData.password = hashedPassword;
     }
 
+    // proses upload file avatar (hanya jika file dikirim)
+    if (file) {
+      const uploadDir = path.join(__dirname, '..', '..', 'avatar');
+
+      // buat folder jika belum ada
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+
+      const fileName = `${Date.now()}-${file.originalname}`;
+      const filePath = path.join(uploadDir, fileName);
+      fs.writeFileSync(filePath, file.buffer);
+
+      // simpan path relatif ke database
+      updateData.avatar = `/avatar/${fileName}`;
+    }
+
     const updatedUser = await this.prisma.user.update({
       where: { id: userId },
       data: updateData,
+      select: this.userSelectFields,
     });
 
     return {
