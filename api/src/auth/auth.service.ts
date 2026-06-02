@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
+import { metadata } from 'reflect-metadata/no-conflict';
 
 @Injectable()
 export class AuthService {
@@ -53,7 +54,6 @@ export class AuthService {
       data,
     };
   }
-  
 
   async register(data: RegisterDto) {
     const existingUser = await this.prisma.user.findUnique({
@@ -75,12 +75,15 @@ export class AuthService {
     });
 
     return {
+      staus: true,
       message: 'Register berhasil',
-      user: {
+      metadata: {
+        status_code: HttpStatus.CREATED,
+      },
+      data: {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role,
         createdAt: user.createdAt,
       },
     };
@@ -121,7 +124,6 @@ export class AuthService {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role,
         },
       },
     };
@@ -176,12 +178,18 @@ export class AuthService {
     };
   }
 
-  async update(userId: number, data: UpdateUserDto, userPayload: { sub: number; role: string }) {
+  async update(
+    userId: number,
+    data: UpdateUserDto,
+    userPayload: { sub: number; role: string },
+  ) {
     const targetId = parseInt(userId as any, 10);
     const requestorId = parseInt(userPayload?.sub as any, 10);
 
     if (targetId !== requestorId && userPayload?.role !== 'ADMIN') {
-      throw new ForbiddenException('Anda tidak diizinkan mengubah data pengguna lain');
+      throw new ForbiddenException(
+        'Anda tidak diizinkan mengubah data pengguna lain',
+      );
     }
 
     const updateData: Partial<UpdateUserDto> = {};
@@ -204,6 +212,39 @@ export class AuthService {
       status: 200,
       message: 'Update user berhasil',
       data: updatedUser,
+    };
+  }
+
+  // register admin
+  async registerAdmin(data: RegisterDto) {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('Email sudah digunakan');
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    const user = await this.prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        role: 'ADMIN',
+      },
+    });
+
+    return {
+      message: 'Register berhasil',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
     };
   }
 }
