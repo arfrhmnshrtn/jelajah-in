@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-na
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../store/useAppStore';
 
+
 interface DestinationCardProps {
   id: string;
   name: string;
@@ -13,45 +14,20 @@ interface DestinationCardProps {
   onPress: () => void;
 }
 
+
+
 export default function DestinationCard({ 
   id, name, location, distance, price, image, onPress 
 }: DestinationCardProps) {
   
   const { isDarkMode, favoriteIds, toggleFavorite, currentUser } = useAppStore();
   const isLiked = favoriteIds.includes(id);
-
   const [isLoadingLike, setIsLoadingLike] = useState(false);
 
   const themeColors = {
     bg: isDarkMode ? '#1E293B' : '#FFFFFF',
     textTitle: isDarkMode ? '#F8FAFC' : '#0F172A',
     textSub: isDarkMode ? '#94A3B8' : '#64748B',
-  };
-
-  const handleToggleFavorite = async () => {
-    // 1. Nyalakan animasi loading
-    setIsLoadingLike(true);
-
-    try {
-      // 2. Trik API Bohongan: Pura-pura menunggu server Arief merespons selama 1,5 detik
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // 3. Langsung ubah warna tombol Love-nya (Nyalakan/Matikan)
-      toggleFavorite(id); 
-
-      // 4. Beri pesan sukses di konsol
-      if (isLiked) {
-        console.log("Pura-pura berhasil MENGHAPUS dari server!");
-      } else {
-        console.log("Pura-pura berhasil MENAMBAH ke server!");
-      }
-
-    } catch (error) {
-      Alert.alert("Gagal", "Sistem bohongan error");
-    } finally {
-      // 5. Matikan animasi loading
-      setIsLoadingLike(false);
-    }
   };
 
   // const handleToggleFavorite = async () => {
@@ -141,6 +117,32 @@ export default function DestinationCard({
   //     }
   //   }
   // };
+
+  const handleToggleFavorite = async () => {
+    // 1. Nyalakan animasi loading
+    setIsLoadingLike(true);
+
+    try {
+      // 2. Trik API Bohongan: Pura-pura menunggu server Arief merespons selama 1,5 detik
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // 3. Langsung ubah warna tombol Love-nya (Nyalakan/Matikan)
+      toggleFavorite(id); 
+
+      // 4. Beri pesan sukses di konsol
+      if (isLiked) {
+        console.log("Pura-pura berhasil MENGHAPUS dari server!");
+      } else {
+        console.log("Pura-pura berhasil MENAMBAH ke server!");
+      }
+
+    } catch (error) {
+      Alert.alert("Gagal", "Sistem bohongan error");
+    } finally {
+      // 5. Matikan animasi loading
+      setIsLoadingLike(false);
+    }
+  };
 
   return (
     <View style={[styles.card, { backgroundColor: themeColors.bg }]}>
