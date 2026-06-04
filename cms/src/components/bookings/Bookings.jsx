@@ -25,9 +25,8 @@ const Bookings = ({ bookings, setBookings, users = [], packages = [], t }) => {
     setFeedback({ isOpen: true, type, title, message });
   };
 
-  // Enriched bookings by combining booking with user name and package name dynamically
   const enrichedBookings = useMemo(() => {
-    return (bookings || []).map(b => {
+    const combined = (bookings || []).map(b => {
       const user = users.find(u => String(u.id || u._id) === String(b.userId));
       const pkg = packages.find(p => String(p.id || p._id) === String(b.packageId));
       return {
@@ -35,6 +34,13 @@ const Bookings = ({ bookings, setBookings, users = [], packages = [], t }) => {
         user: user || b.user,
         package: pkg || b.package
       };
+    });
+    
+    // Sort by id descending so the order is consistent and newest is on top
+    return combined.sort((a, b) => {
+      const idA = a.id || a._id || 0;
+      const idB = b.id || b._id || 0;
+      return idB - idA;
     });
   }, [bookings, users, packages]);
 
@@ -135,7 +141,8 @@ const Bookings = ({ bookings, setBookings, users = [], packages = [], t }) => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({ status: 'SUCCESS' })
       });
