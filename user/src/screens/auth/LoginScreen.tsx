@@ -35,6 +35,34 @@ export default function LoginScreen({ navigation }: any) {
 
     setIsLoading(true);
 
+    // 🔴 SAKELAR DUMMY LOGIN: Ubah ke 'false' kalau VPS Arief sudah menyala!
+    const USE_DUMMY_LOGIN = true;
+
+    if (USE_DUMMY_LOGIN) {
+      // Pura-pura menunggu server membalas selama 1,5 detik
+      setTimeout(async () => {
+        // Buat data pengguna bohongan untuk sementara
+        const dummyUserData = {
+          id: "999",
+          name: "Penjelajah Dummy", 
+          email: email.trim(),
+          token: "token_bohongan_sementara_12345" // Token ini yang akan mengizinkanmu masuk ke HomeScreen
+        };
+
+        // Simpan ke memori HP dan nyalakan status login
+        await AsyncStorage.setItem('userData', JSON.stringify(dummyUserData));
+        login(dummyUserData);
+
+        // Tampilkan pop-up sukses
+        setWelcomeName(dummyUserData.name);
+        setShowSuccessModal(true);
+        setIsLoading(false);
+      }, 1500);
+      
+      return; // 🛑 BERHENTI DI SINI: Jangan jalankan fetch ke server Arief
+    }
+
+    // --- KODINGAN API ASLI (AMAN TIDAK TERHAPUS) ---
     try {
       const request = await fetch('http://203.194.115.158:3000/api/auth/login/user', {
         method: 'POST',
@@ -66,19 +94,17 @@ export default function LoginScreen({ navigation }: any) {
       // 🕵️ PENARIK TOKEN SUPER LENGKAP (Termasuk gaya Laravel)
       const realToken = response.token 
                      || response.data?.token 
-                     || response.access_token        // <--- Tambahan gaya Laravel
-                     || response.data?.access_token  // <--- Tambahan gaya Laravel
+                     || response.access_token 
+                     || response.data?.access_token 
                      || response.accessToken 
                      || response.data?.accessToken
                      || response.authorisation?.token;
 
-      // 🚨 JIKA TOKEN MASIH TIDAK KETEMU, KITA CEGAT DI SINI! 🚨
       if (!realToken) {
-        // Tampilkan bentuk asli data Arief berupa tulisan merah di layar form login
         console.log("BALASAN ASLI ARIEF:", rawText);
         setErrorMsg(`Token hilang! Balasan Arief: ${rawText.substring(0, 150)}`);
         setIsLoading(false);
-        return; // Hentikan proses, JANGAN tampilkan pop-up sukses!
+        return; 
       }
 
       const userDataFromServer = {
