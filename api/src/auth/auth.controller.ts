@@ -1,4 +1,5 @@
-import { Body, Controller, Post, Get, UseGuards, Patch, Param } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Patch, Param, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -36,22 +37,26 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('update')
+  @UseInterceptors(FileInterceptor('avatar'))
   update(
     @CurrentUser() user: UserPayload,
     @Body() body: UpdateUserDto,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.authService.update(user.sub, body, user);
+    return this.authService.update(user.sub, body, user, file);
   }
 
 
   @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
+  @UseInterceptors(FileInterceptor('avatar'))
   updateById(
     @Param('id') id: string,
     @CurrentUser() user: UserPayload,
     @Body() body: UpdateUserDto,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.authService.update(+id, body, user);
+    return this.authService.update(+id, body, user, file);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -66,5 +71,13 @@ export class AuthController {
   @Get('admins')
   getAllAdmin() {
     return this.authService.getAllAdmin();
+  }
+
+  // register admin
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles('ADMIN')
+  @Post('register/admin')
+  registerAdmin(@Body() body: RegisterDto) {
+    return this.authService.registerAdmin(body);
   }
 }

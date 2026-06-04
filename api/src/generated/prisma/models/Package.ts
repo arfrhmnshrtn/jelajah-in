@@ -29,11 +29,15 @@ export type AggregatePackage = {
 export type PackageAvgAggregateOutputType = {
   id: number | null
   price: number | null
+  latitude: number | null
+  longitude: number | null
 }
 
 export type PackageSumAggregateOutputType = {
   id: number | null
   price: number | null
+  latitude: number | null
+  longitude: number | null
 }
 
 export type PackageMinAggregateOutputType = {
@@ -42,6 +46,8 @@ export type PackageMinAggregateOutputType = {
   description: string | null
   price: number | null
   location: string | null
+  latitude: number | null
+  longitude: number | null
   image: string | null
   createdAt: Date | null
 }
@@ -52,6 +58,8 @@ export type PackageMaxAggregateOutputType = {
   description: string | null
   price: number | null
   location: string | null
+  latitude: number | null
+  longitude: number | null
   image: string | null
   createdAt: Date | null
 }
@@ -62,6 +70,8 @@ export type PackageCountAggregateOutputType = {
   description: number
   price: number
   location: number
+  latitude: number
+  longitude: number
   image: number
   createdAt: number
   _all: number
@@ -71,11 +81,15 @@ export type PackageCountAggregateOutputType = {
 export type PackageAvgAggregateInputType = {
   id?: true
   price?: true
+  latitude?: true
+  longitude?: true
 }
 
 export type PackageSumAggregateInputType = {
   id?: true
   price?: true
+  latitude?: true
+  longitude?: true
 }
 
 export type PackageMinAggregateInputType = {
@@ -84,6 +98,8 @@ export type PackageMinAggregateInputType = {
   description?: true
   price?: true
   location?: true
+  latitude?: true
+  longitude?: true
   image?: true
   createdAt?: true
 }
@@ -94,6 +110,8 @@ export type PackageMaxAggregateInputType = {
   description?: true
   price?: true
   location?: true
+  latitude?: true
+  longitude?: true
   image?: true
   createdAt?: true
 }
@@ -104,6 +122,8 @@ export type PackageCountAggregateInputType = {
   description?: true
   price?: true
   location?: true
+  latitude?: true
+  longitude?: true
   image?: true
   createdAt?: true
   _all?: true
@@ -201,6 +221,8 @@ export type PackageGroupByOutputType = {
   description: string
   price: number
   location: string
+  latitude: number | null
+  longitude: number | null
   image: string
   createdAt: Date
   _count: PackageCountAggregateOutputType | null
@@ -234,6 +256,8 @@ export type PackageWhereInput = {
   description?: Prisma.StringFilter<"Package"> | string
   price?: Prisma.IntFilter<"Package"> | number
   location?: Prisma.StringFilter<"Package"> | string
+  latitude?: Prisma.FloatNullableFilter<"Package"> | number | null
+  longitude?: Prisma.FloatNullableFilter<"Package"> | number | null
   image?: Prisma.StringFilter<"Package"> | string
   createdAt?: Prisma.DateTimeFilter<"Package"> | Date | string
   bookings?: Prisma.BookingListRelationFilter
@@ -246,6 +270,8 @@ export type PackageOrderByWithRelationInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   bookings?: Prisma.BookingOrderByRelationAggregateInput
@@ -261,6 +287,8 @@ export type PackageWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringFilter<"Package"> | string
   price?: Prisma.IntFilter<"Package"> | number
   location?: Prisma.StringFilter<"Package"> | string
+  latitude?: Prisma.FloatNullableFilter<"Package"> | number | null
+  longitude?: Prisma.FloatNullableFilter<"Package"> | number | null
   image?: Prisma.StringFilter<"Package"> | string
   createdAt?: Prisma.DateTimeFilter<"Package"> | Date | string
   bookings?: Prisma.BookingListRelationFilter
@@ -273,6 +301,8 @@ export type PackageOrderByWithAggregationInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  latitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  longitude?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.PackageCountOrderByAggregateInput
@@ -291,6 +321,8 @@ export type PackageScalarWhereWithAggregatesInput = {
   description?: Prisma.StringWithAggregatesFilter<"Package"> | string
   price?: Prisma.IntWithAggregatesFilter<"Package"> | number
   location?: Prisma.StringWithAggregatesFilter<"Package"> | string
+  latitude?: Prisma.FloatNullableWithAggregatesFilter<"Package"> | number | null
+  longitude?: Prisma.FloatNullableWithAggregatesFilter<"Package"> | number | null
   image?: Prisma.StringWithAggregatesFilter<"Package"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Package"> | Date | string
 }
@@ -300,6 +332,8 @@ export type PackageCreateInput = {
   description: string
   price: number
   location: string
+  latitude?: number | null
+  longitude?: number | null
   image: string
   createdAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutPackageInput
@@ -312,6 +346,8 @@ export type PackageUncheckedCreateInput = {
   description: string
   price: number
   location: string
+  latitude?: number | null
+  longitude?: number | null
   image: string
   createdAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutPackageInput
@@ -323,6 +359,8 @@ export type PackageUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   location?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   image?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUpdateManyWithoutPackageNestedInput
@@ -335,6 +373,8 @@ export type PackageUncheckedUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   location?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   image?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutPackageNestedInput
@@ -347,6 +387,8 @@ export type PackageCreateManyInput = {
   description: string
   price: number
   location: string
+  latitude?: number | null
+  longitude?: number | null
   image: string
   createdAt?: Date | string
 }
@@ -356,6 +398,8 @@ export type PackageUpdateManyMutationInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   location?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   image?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -366,6 +410,8 @@ export type PackageUncheckedUpdateManyInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   location?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   image?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -376,6 +422,8 @@ export type PackageCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
   image?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -383,6 +431,8 @@ export type PackageCountOrderByAggregateInput = {
 export type PackageAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
 }
 
 export type PackageMaxOrderByAggregateInput = {
@@ -391,6 +441,8 @@ export type PackageMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
   image?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -401,6 +453,8 @@ export type PackageMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
   image?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -408,11 +462,21 @@ export type PackageMinOrderByAggregateInput = {
 export type PackageSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   price?: Prisma.SortOrder
+  latitude?: Prisma.SortOrder
+  longitude?: Prisma.SortOrder
 }
 
 export type PackageScalarRelationFilter = {
   is?: Prisma.PackageWhereInput
   isNot?: Prisma.PackageWhereInput
+}
+
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type PackageCreateNestedOneWithoutBookingsInput = {
@@ -448,6 +512,8 @@ export type PackageCreateWithoutBookingsInput = {
   description: string
   price: number
   location: string
+  latitude?: number | null
+  longitude?: number | null
   image: string
   createdAt?: Date | string
   bookmarks?: Prisma.BookmarkCreateNestedManyWithoutPackageInput
@@ -459,6 +525,8 @@ export type PackageUncheckedCreateWithoutBookingsInput = {
   description: string
   price: number
   location: string
+  latitude?: number | null
+  longitude?: number | null
   image: string
   createdAt?: Date | string
   bookmarks?: Prisma.BookmarkUncheckedCreateNestedManyWithoutPackageInput
@@ -485,6 +553,8 @@ export type PackageUpdateWithoutBookingsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   location?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   image?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookmarks?: Prisma.BookmarkUpdateManyWithoutPackageNestedInput
@@ -496,6 +566,8 @@ export type PackageUncheckedUpdateWithoutBookingsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   location?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   image?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookmarks?: Prisma.BookmarkUncheckedUpdateManyWithoutPackageNestedInput
@@ -506,6 +578,8 @@ export type PackageCreateWithoutBookmarksInput = {
   description: string
   price: number
   location: string
+  latitude?: number | null
+  longitude?: number | null
   image: string
   createdAt?: Date | string
   bookings?: Prisma.BookingCreateNestedManyWithoutPackageInput
@@ -517,6 +591,8 @@ export type PackageUncheckedCreateWithoutBookmarksInput = {
   description: string
   price: number
   location: string
+  latitude?: number | null
+  longitude?: number | null
   image: string
   createdAt?: Date | string
   bookings?: Prisma.BookingUncheckedCreateNestedManyWithoutPackageInput
@@ -543,6 +619,8 @@ export type PackageUpdateWithoutBookmarksInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   location?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   image?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUpdateManyWithoutPackageNestedInput
@@ -554,6 +632,8 @@ export type PackageUncheckedUpdateWithoutBookmarksInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.IntFieldUpdateOperationsInput | number
   location?: Prisma.StringFieldUpdateOperationsInput | string
+  latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   image?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bookings?: Prisma.BookingUncheckedUpdateManyWithoutPackageNestedInput
@@ -605,6 +685,8 @@ export type PackageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   description?: boolean
   price?: boolean
   location?: boolean
+  latitude?: boolean
+  longitude?: boolean
   image?: boolean
   createdAt?: boolean
   bookings?: boolean | Prisma.Package$bookingsArgs<ExtArgs>
@@ -618,6 +700,8 @@ export type PackageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   price?: boolean
   location?: boolean
+  latitude?: boolean
+  longitude?: boolean
   image?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["package"]>
@@ -628,6 +712,8 @@ export type PackageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   description?: boolean
   price?: boolean
   location?: boolean
+  latitude?: boolean
+  longitude?: boolean
   image?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["package"]>
@@ -638,11 +724,13 @@ export type PackageSelectScalar = {
   description?: boolean
   price?: boolean
   location?: boolean
+  latitude?: boolean
+  longitude?: boolean
   image?: boolean
   createdAt?: boolean
 }
 
-export type PackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "location" | "image" | "createdAt", ExtArgs["result"]["package"]>
+export type PackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "location" | "latitude" | "longitude" | "image" | "createdAt", ExtArgs["result"]["package"]>
 export type PackageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bookings?: boolean | Prisma.Package$bookingsArgs<ExtArgs>
   bookmarks?: boolean | Prisma.Package$bookmarksArgs<ExtArgs>
@@ -663,6 +751,8 @@ export type $PackagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     description: string
     price: number
     location: string
+    latitude: number | null
+    longitude: number | null
     image: string
     createdAt: Date
   }, ExtArgs["result"]["package"]>
@@ -1095,6 +1185,8 @@ export interface PackageFieldRefs {
   readonly description: Prisma.FieldRef<"Package", 'String'>
   readonly price: Prisma.FieldRef<"Package", 'Int'>
   readonly location: Prisma.FieldRef<"Package", 'String'>
+  readonly latitude: Prisma.FieldRef<"Package", 'Float'>
+  readonly longitude: Prisma.FieldRef<"Package", 'Float'>
   readonly image: Prisma.FieldRef<"Package", 'String'>
   readonly createdAt: Prisma.FieldRef<"Package", 'DateTime'>
 }

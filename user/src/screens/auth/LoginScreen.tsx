@@ -35,8 +35,48 @@ export default function LoginScreen({ navigation }: any) {
 
     setIsLoading(true);
 
+<<<<<<< HEAD
     // 🔴 SAKELAR PUSAT: Ubah jadi 'false' saat server Arief sudah hidup!
     const USE_DUMMY_LOGIN = true; 
+=======
+    // 🔴 SAKELAR DUMMY LOGIN: Ubah ke 'false' kalau VPS Arief sudah menyala!
+    const USE_DUMMY_LOGIN = true;
+
+    if (USE_DUMMY_LOGIN) {
+      // Pura-pura menunggu server membalas selama 1,5 detik
+      setTimeout(async () => {
+        // Buat data pengguna bohongan untuk sementara
+        const dummyUserData = {
+          id: "999",
+          name: "Penjelajah Dummy", 
+          email: email.trim(),
+          token: "token_bohongan_sementara_12345" // Token ini yang akan mengizinkanmu masuk ke HomeScreen
+        };
+
+        // Simpan ke memori HP dan nyalakan status login
+        await AsyncStorage.setItem('userData', JSON.stringify(dummyUserData));
+        login(dummyUserData);
+
+        // Tampilkan pop-up sukses
+        setWelcomeName(dummyUserData.name);
+        setShowSuccessModal(true);
+        setIsLoading(false);
+      }, 1500);
+      
+      return; // 🛑 BERHENTI DI SINI: Jangan jalankan fetch ke server Arief
+    }
+
+    // --- KODINGAN API ASLI (AMAN TIDAK TERHAPUS) ---
+    try {
+      const request = await fetch('http://203.194.115.158:3000/api/auth/login/user', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json' 
+        },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+>>>>>>> 3d90731b9b16cad645285aed8f8bda056d4fed8c
 
     if (USE_DUMMY_LOGIN) {
       // ==========================================
@@ -108,6 +148,47 @@ export default function LoginScreen({ navigation }: any) {
       } finally {
         setIsLoading(false);
       }
+<<<<<<< HEAD
+=======
+
+      const fetchedName = response.user?.name || response.data?.name || response.data?.user?.name || response.name || 'Pengguna Jelajah';
+      const fetchedEmail = response.user?.email || response.data?.email || response.data?.user?.email || response.email || email;
+      const fetchedId = response.user?.id || response.data?.id || response.data?.user?.id || response.id || Date.now().toString();
+
+      // 🕵️ PENARIK TOKEN SUPER LENGKAP (Termasuk gaya Laravel)
+      const realToken = response.token 
+                     || response.data?.token 
+                     || response.access_token 
+                     || response.data?.access_token 
+                     || response.accessToken 
+                     || response.data?.accessToken
+                     || response.authorisation?.token;
+
+      if (!realToken) {
+        console.log("BALASAN ASLI ARIEF:", rawText);
+        setErrorMsg(`Token hilang! Balasan Arief: ${rawText.substring(0, 150)}`);
+        setIsLoading(false);
+        return; 
+      }
+
+      const userDataFromServer = {
+        id: fetchedId.toString(),
+        name: fetchedName, 
+        email: fetchedEmail,
+        token: realToken 
+      };
+
+      await AsyncStorage.setItem('userData', JSON.stringify(userDataFromServer));
+      login(userDataFromServer);
+
+      setWelcomeName(fetchedName);
+      setShowSuccessModal(true);
+
+    } catch (error: any) {
+      setErrorMsg(`Error: ${error.message}`); 
+    } finally {
+      setIsLoading(false);
+>>>>>>> 3d90731b9b16cad645285aed8f8bda056d4fed8c
     }
   };
 
