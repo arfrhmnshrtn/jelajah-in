@@ -98,6 +98,36 @@ export default function HomeScreen({ navigation }: any) {
   const fetchDestinations = useCallback(async () => {
     if (!userCoords) return;
     setIsLoading(true);
+
+    // 🔴 SAKELAR DUMMY: Ubah ke 'false' kalau VPS Arief sudah menyala!
+    const USE_DUMMY_DATA = true;
+
+    if (USE_DUMMY_DATA) {
+      // Pura-pura loading 1,5 detik agar animasi Skeleton buatanmu sempat terlihat
+      setTimeout(() => {
+        const formattedDummy = dummyDestinations.map((item: any) => ({
+          id: item.id.toString(),
+          name: item.name,
+          category: item.name.includes('Gunung') || item.name.includes('Menara') ? 'Gunung' : 'Pantai', // Logika kategori sederhana
+          location: item.location,
+          price: `Rp ${item.price.toLocaleString('id-ID')}`,
+          image: item.image,
+          images: [item.image],
+          description: 'Deskripsi wisata sementara karena server sedang mati.',
+          lat: -5.4,
+          lon: 105.2,
+          distance: item.distance,
+          rawDist: parseInt(item.distance)
+        }));
+        
+        setDestinations(formattedDummy);
+        setIsLoading(false);
+        setRefreshing(false);
+      }, 1500);
+      return; // Berhenti di sini, fungsi fetch API ke server tidak akan dijalankan
+    }
+
+    // --- KODINGAN API ASLI (AMAN TIDAK TERHAPUS) ---
     try {
       const request = await fetch('http://203.194.115.158:3000/api/packages', {
         method: 'GET',
