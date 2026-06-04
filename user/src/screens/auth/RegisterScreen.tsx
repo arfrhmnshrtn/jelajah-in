@@ -48,25 +48,36 @@ export default function RegisterScreen({ navigation }: any) {
     setIsLoading(true);
 
     try {
-      // Menembak API Backend (URL disesuaikan dengan dokumentasi: /auth/register)
-      // Catatan: Pastikan apakah Arief menggunakan awalan /api/ atau langsung /auth/
-      const request = await fetch('http://203.194.115.158:3000/api/auth/register', {
+      // 🛠️ PERUBAHAN 1: Panggil base URL dari .env (Sama seperti Login)
+      const baseUrl = process.env.EXPO_PUBLIC_API_URL || 'https://3651-114-10-100-230.ngrok-free.app/api';
+      
+      const request = await fetch(`${baseUrl}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'ngrok-skip-browser-warning': 'true' // 🛠️ PERUBAHAN 2: Penangkal Wajib Ngrok
         },
         body: JSON.stringify({ 
-          name: name,
-          email: email, 
+          name: name.trim(), // Tambahan .trim() biar spasi tak sengaja terhapus
+          email: email.trim(), 
           password: password 
         }),
       });
 
-      const response = await request.json();
+      // 🛠️ PERUBAHAN 3: Parsing aman anti-crash (Sama seperti Login)
+      const rawText = await request.text();
+      let response;
+      try {
+        response = JSON.parse(rawText);
+      } catch (e) {
+        throw new Error('Server membalas dengan format yang salah.');
+      }
 
       // Jika ada error dari server (misal email sudah terpakai)
       if (!request.ok) {
         setMsg({ text: response.message || 'Pendaftaran gagal!', type: 'error' });
+        setIsLoading(false);
         return;
       }
 
@@ -79,9 +90,9 @@ export default function RegisterScreen({ navigation }: any) {
       // Tunggu 1.5 detik agar user bisa baca pesan sukses, lalu pindah ke halaman Login
       setTimeout(() => navigation.replace('Login'), 1500);
 
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      setMsg({ text: 'Terjadi kesalahan jaringan. Coba lagi!', type: 'error' });
+      setMsg({ text: error.message || 'Terjadi kesalahan jaringan. Coba lagi!', type: 'error' });
     } finally {
       setIsLoading(false);
     }
