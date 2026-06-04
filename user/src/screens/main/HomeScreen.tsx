@@ -100,31 +100,48 @@ export default function HomeScreen({ navigation }: any) {
     setIsLoading(true);
 
     // 🔴 SAKELAR DUMMY: Ubah ke 'false' kalau VPS Arief sudah menyala!
+    // 🔴 SAKELAR DUMMY: Ubah ke 'false' kalau VPS Arief sudah menyala!
     const USE_DUMMY_DATA = true;
 
     if (USE_DUMMY_DATA) {
-      // Pura-pura loading 1,5 detik agar animasi Skeleton buatanmu sempat terlihat
+      // Kita suntik datanya secara mentah dan langsung ke sini
+      const dataMentahLangsung = [
+        {
+          id: "1",
+          name: "Pulau Pahawang",
+          category: "Pantai", // Langsung cocokkan dengan kategori di CategoryChip
+          location: "Pesawaran, Lampung",
+          price: "Rp 50.000",
+          image: "https://images.unsplash.com/photo-1596404764422-c313271703e7?q=80&w=500&auto=format&fit=crop",
+          images: ["https://images.unsplash.com/photo-1596404764422-c313271703e7?q=80&w=500&auto=format&fit=crop"],
+          description: "Surga bawah laut tersembunyi di pesisir Lampung.",
+          lat: -5.6738,
+          lon: 105.2155,
+          distance: "25.0 km",
+          rawDist: 25.0
+        },
+        {
+          id: "2",
+          name: "Menara Siger",
+          category: "Gunung", // Masuk kategori Gunung/Budaya
+          location: "Bakauheni, Lampung",
+          price: "Rp 15.000",
+          image: "https://images.unsplash.com/photo-1610531551694-df91bf0f1e00?q=80&w=500&auto=format&fit=crop",
+          images: ["https://images.unsplash.com/photo-1610531551694-df91bf0f1e00?q=80&w=500&auto=format&fit=crop"],
+          description: "Titik nol Pulau Sumatera dengan pemandangan laut lepas.",
+          lat: -5.8741,
+          lon: 105.7535,
+          distance: "85.0 km",
+          rawDist: 85.0
+        }
+      ];
+
       setTimeout(() => {
-        const formattedDummy = dummyDestinations.map((item: any) => ({
-          id: item.id.toString(),
-          name: item.name,
-          category: item.name.includes('Gunung') || item.name.includes('Menara') ? 'Gunung' : 'Pantai', // Logika kategori sederhana
-          location: item.location,
-          price: `Rp ${item.price.toLocaleString('id-ID')}`,
-          image: item.image,
-          images: [item.image],
-          description: 'Deskripsi wisata sementara karena server sedang mati.',
-          lat: -5.4,
-          lon: 105.2,
-          distance: item.distance,
-          rawDist: parseInt(item.distance)
-        }));
-        
-        setDestinations(formattedDummy);
+        setDestinations(dataMentahLangsung);
         setIsLoading(false);
         setRefreshing(false);
       }, 1500);
-      return; // Berhenti di sini, fungsi fetch API ke server tidak akan dijalankan
+      return; 
     }
 
     // --- KODINGAN API ASLI (AMAN TIDAK TERHAPUS) ---
