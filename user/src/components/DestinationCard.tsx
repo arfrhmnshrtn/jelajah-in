@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../store/useAppStore';
@@ -20,6 +20,8 @@ export default function DestinationCard({
   const { isDarkMode, favoriteIds, toggleFavorite, currentUser } = useAppStore();
   const isLiked = favoriteIds.includes(id);
 
+  const [isLoadingLike, setIsLoadingLike] = useState(false);
+
   const themeColors = {
     bg: isDarkMode ? '#1E293B' : '#FFFFFF',
     textTitle: isDarkMode ? '#F8FAFC' : '#0F172A',
@@ -27,92 +29,118 @@ export default function DestinationCard({
   };
 
   const handleToggleFavorite = async () => {
-    
-    if (!currentUser || !currentUser.token) {
-      Alert.alert("Perhatian", "Silakan login terlebih dahulu untuk menyimpan wisata favorit.");
-      return;
-    }
+    // 1. Nyalakan animasi loading
+    setIsLoadingLike(true);
 
-    if (!isLiked) {
-      // --- 🟢 JIKA MENAMBAH FAVORIT (POST) ---
-      try {
-        const request = await fetch('http://203.194.115.158:3000/api/bookmarks', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${currentUser.token}`
-          },
-          body: JSON.stringify({ packageId: parseInt(id) }) 
-        });
+    try {
+      // 2. Trik API Bohongan: Pura-pura menunggu server Arief merespons selama 1,5 detik
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
-        const rawText = await request.text();
+      // 3. Langsung ubah warna tombol Love-nya (Nyalakan/Matikan)
+      toggleFavorite(id); 
 
-        if (!request.ok) {
-          if (rawText.includes("Sudah di-bookmark") || rawText.includes("already")) {
-             // Kalau ternyata sudah ada di server, nyalakan saja warnanya di HP
-             toggleFavorite(id); 
-          } else {
-             Alert.alert("Gagal Menyimpan", rawText);
-          }
-        } else {
-          toggleFavorite(id); // Berhasil, nyalakan love
-          console.log("Wisata berhasil ditambah ke server Arief!");
-        }
-      } catch (error: any) {
-        Alert.alert("Masalah Jaringan", `Gagal terhubung ke server: ${error.message}`);
+      // 4. Beri pesan sukses di konsol
+      if (isLiked) {
+        console.log("Pura-pura berhasil MENGHAPUS dari server!");
+      } else {
+        console.log("Pura-pura berhasil MENAMBAH ke server!");
       }
 
-    } else {
-      // --- 🔴 JIKA MENGHAPUS FAVORIT DARI HALAMAN HOME (DELETE) ---
-      try {
-        // 1. Ambil daftar bookmark dari server untuk mencari ID Bookmark-nya
-        const getRequest = await fetch('http://203.194.115.158:3000/api/bookmarks', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${currentUser.token}`,
-            'Accept': 'application/json'
-          }
-        });
-        
-        const getResponse = await getRequest.json();
-        
-        if (getRequest.ok) {
-          const bookmarksList = getResponse.data || getResponse;
-          
-          // 2. Cari bookmark yang cocok dengan ID Wisata (packageId) ini
-          const targetBookmark = bookmarksList.find((b: any) => {
-             const wisata = b.package || b;
-             return wisata.id?.toString() === id.toString();
-          });
-
-          // 3. Jika ketemu ID Bookmark-nya, langsung tembak perintah DELETE
-          if (targetBookmark && targetBookmark.id) {
-            const deleteRequest = await fetch(`http://203.194.115.158:3000/api/bookmarks/${targetBookmark.id}`, {
-              method: 'DELETE',
-              headers: {
-                'Authorization': `Bearer ${currentUser.token}`,
-                'Accept': 'application/json'
-              }
-            });
-
-            if (deleteRequest.ok) {
-              toggleFavorite(id); // Matikan warna merah di HP
-              console.log("Berhasil hapus favorit langsung dari Home!");
-            } else {
-              Alert.alert("Gagal", "Gagal menghapus dari daftar favorit di server.");
-            }
-          } else {
-            // Kalau di server Arief ternyata tidak ada (sinkronisasi telat), 
-            // kita matikan saja paksa love merahnya di HP agar sesuai.
-            toggleFavorite(id);
-          }
-        }
-      } catch (error: any) {
-        Alert.alert("Masalah Jaringan", `Gagal menghapus favorit: ${error.message}`);
-      }
+    } catch (error) {
+      Alert.alert("Gagal", "Sistem bohongan error");
+    } finally {
+      // 5. Matikan animasi loading
+      setIsLoadingLike(false);
     }
   };
+
+  // const handleToggleFavorite = async () => {
+    
+  //   if (!currentUser || !currentUser.token) {
+  //     Alert.alert("Perhatian", "Silakan login terlebih dahulu untuk menyimpan wisata favorit.");
+  //     return;
+  //   }
+
+  //   if (!isLiked) {
+  //     // --- 🟢 JIKA MENAMBAH FAVORIT (POST) ---
+  //     try {
+  //       const request = await fetch('http://203.194.115.158:3000/api/bookmarks', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Accept': 'application/json',
+  //           'Authorization': `Bearer ${currentUser.token}`
+  //         },
+  //         body: JSON.stringify({ packageId: parseInt(id) }) 
+  //       });
+
+  //       const rawText = await request.text();
+
+  //       if (!request.ok) {
+  //         if (rawText.includes("Sudah di-bookmark") || rawText.includes("already")) {
+  //            // Kalau ternyata sudah ada di server, nyalakan saja warnanya di HP
+  //            toggleFavorite(id); 
+  //         } else {
+  //            Alert.alert("Gagal Menyimpan", rawText);
+  //         }
+  //       } else {
+  //         toggleFavorite(id); // Berhasil, nyalakan love
+  //         console.log("Wisata berhasil ditambah ke server Arief!");
+  //       }
+  //     } catch (error: any) {
+  //       Alert.alert("Masalah Jaringan", `Gagal terhubung ke server: ${error.message}`);
+  //     }
+
+  //   } else {
+  //     // --- 🔴 JIKA MENGHAPUS FAVORIT DARI HALAMAN HOME (DELETE) ---
+  //     try {
+  //       // 1. Ambil daftar bookmark dari server untuk mencari ID Bookmark-nya
+  //       const getRequest = await fetch('http://203.194.115.158:3000/api/bookmarks', {
+  //         method: 'GET',
+  //         headers: {
+  //           'Authorization': `Bearer ${currentUser.token}`,
+  //           'Accept': 'application/json'
+  //         }
+  //       });
+        
+  //       const getResponse = await getRequest.json();
+        
+  //       if (getRequest.ok) {
+  //         const bookmarksList = getResponse.data || getResponse;
+          
+  //         // 2. Cari bookmark yang cocok dengan ID Wisata (packageId) ini
+  //         const targetBookmark = bookmarksList.find((b: any) => {
+  //            const wisata = b.package || b;
+  //            return wisata.id?.toString() === id.toString();
+  //         });
+
+  //         // 3. Jika ketemu ID Bookmark-nya, langsung tembak perintah DELETE
+  //         if (targetBookmark && targetBookmark.id) {
+  //           const deleteRequest = await fetch(`http://203.194.115.158:3000/api/bookmarks/${targetBookmark.id}`, {
+  //             method: 'DELETE',
+  //             headers: {
+  //               'Authorization': `Bearer ${currentUser.token}`,
+  //               'Accept': 'application/json'
+  //             }
+  //           });
+
+  //           if (deleteRequest.ok) {
+  //             toggleFavorite(id); // Matikan warna merah di HP
+  //             console.log("Berhasil hapus favorit langsung dari Home!");
+  //           } else {
+  //             Alert.alert("Gagal", "Gagal menghapus dari daftar favorit di server.");
+  //           }
+  //         } else {
+  //           // Kalau di server Arief ternyata tidak ada (sinkronisasi telat), 
+  //           // kita matikan saja paksa love merahnya di HP agar sesuai.
+  //           toggleFavorite(id);
+  //         }
+  //       }
+  //     } catch (error: any) {
+  //       Alert.alert("Masalah Jaringan", `Gagal menghapus favorit: ${error.message}`);
+  //     }
+  //   }
+  // };
 
   return (
     <View style={[styles.card, { backgroundColor: themeColors.bg }]}>

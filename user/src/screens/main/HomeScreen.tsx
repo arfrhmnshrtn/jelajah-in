@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import { useAppStore } from '../../store/useAppStore';
 import DestinationCard from '../../components/DestinationCard';
 import CategoryChip from '../../components/CategoryChip';
+import { dummyDestinations } from '../../utils/dummyDestinations'; // Sesuaikan folder jika berbeda
 
 interface Destination {
   id: string;
@@ -97,6 +98,53 @@ export default function HomeScreen({ navigation }: any) {
   const fetchDestinations = useCallback(async () => {
     if (!userCoords) return;
     setIsLoading(true);
+
+    // 🔴 SAKELAR DUMMY: Ubah ke 'false' kalau VPS Arief sudah menyala!
+    // 🔴 SAKELAR DUMMY: Ubah ke 'false' kalau VPS Arief sudah menyala!
+    const USE_DUMMY_DATA = true;
+
+    if (USE_DUMMY_DATA) {
+      // Kita suntik datanya secara mentah dan langsung ke sini
+      const dataMentahLangsung = [
+        {
+          id: "1",
+          name: "Pulau Pahawang",
+          category: "Pantai", // Langsung cocokkan dengan kategori di CategoryChip
+          location: "Pesawaran, Lampung",
+          price: "Rp 50.000",
+          image: "https://images.unsplash.com/photo-1596404764422-c313271703e7?q=80&w=500&auto=format&fit=crop",
+          images: ["https://images.unsplash.com/photo-1596404764422-c313271703e7?q=80&w=500&auto=format&fit=crop"],
+          description: "Surga bawah laut tersembunyi di pesisir Lampung.",
+          lat: -5.6738,
+          lon: 105.2155,
+          distance: "25.0 km",
+          rawDist: 25.0
+        },
+        {
+          id: "2",
+          name: "Menara Siger",
+          category: "Gunung", // Masuk kategori Gunung/Budaya
+          location: "Bakauheni, Lampung",
+          price: "Rp 15.000",
+          image: "https://images.unsplash.com/photo-1610531551694-df91bf0f1e00?q=80&w=500&auto=format&fit=crop",
+          images: ["https://images.unsplash.com/photo-1610531551694-df91bf0f1e00?q=80&w=500&auto=format&fit=crop"],
+          description: "Titik nol Pulau Sumatera dengan pemandangan laut lepas.",
+          lat: -5.8741,
+          lon: 105.7535,
+          distance: "85.0 km",
+          rawDist: 85.0
+        }
+      ];
+
+      setTimeout(() => {
+        setDestinations(dataMentahLangsung);
+        setIsLoading(false);
+        setRefreshing(false);
+      }, 1500);
+      return; 
+    }
+
+    // --- KODINGAN API ASLI (AMAN TIDAK TERHAPUS) ---
     try {
       const request = await fetch('http://203.194.115.158:3000/api/packages', {
         method: 'GET',
