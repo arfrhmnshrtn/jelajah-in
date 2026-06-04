@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import { useAppStore } from '../../store/useAppStore';
 import DestinationCard from '../../components/DestinationCard';
 import CategoryChip from '../../components/CategoryChip';
+import { dummyDestinations } from '../../utils/dummyDestinations'; // Sesuaikan folder jika berbeda
 
 interface Destination {
   id: string;
