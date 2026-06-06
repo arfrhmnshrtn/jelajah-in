@@ -1,50 +1,125 @@
 import React from 'react';
-import { MoreVertical, Eye, Edit, Trash2 } from 'lucide-react';
+import { Eye, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const RecentBookings = ({ bookings, t }) => {
-  const activeBookings = bookings.slice(0, 4).map(b => ({
-    id: b.id,
-    name: b.pelanggan,
-    package: b.paket,
-    amount: b.total,
-    statusClass: b.status,
-    statusText: b.status === 'success' ? t('t_success') : b.status === 'pending' ? t('t_pending') : t('t_cancelled')
-  }));
+  const navigate = useNavigate();
+  
+  // Take the 5 latest bookings
+  const latestBookings = [...(bookings || [])].reverse().slice(0, 5);
+
+  const formatCurrency = (val) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0
+    }).format(val);
+  };
 
   return (
-    <div className="projects-section" style={{ padding: '0' }}>
-      <div style={{ padding: '20px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 700 }}>{t('dg_latest_booking')}</h3>
-        <button className="icon-button"><MoreVertical size={18} /></button>
+    <div className="projects-section" style={{ padding: '0', overflow: 'hidden' }}>
+      <div style={{ padding: '24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to right, rgba(99, 102, 241, 0.03), transparent)' }}>
+        <div>
+          <h3 style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.5px' }}>{t('dg_latest_booking')}</h3>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '2px' }}>Aktivitas pemesanan paket terbaru</p>
+        </div>
+        <button 
+          onClick={() => navigate('/bookings')}
+          style={{ 
+            fontSize: '13px', 
+            fontWeight: 700, 
+            color: 'var(--primary)', 
+            background: 'none', 
+            border: 'none', 
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
+          }}
+        >
+          Lihat Semua <ChevronRight size={16} />
+        </button>
       </div>
+
       <div className="table-responsive">
-        <table>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr>
-              <th>{t('t_customer')} / {t('packages')}</th>
-              <th style={{ textAlign: 'center' }}>Total</th>
-              <th style={{ textAlign: 'center' }}>{t('t_status')}</th>
-              <th style={{ textAlign: 'center' }}>{t('t_action')}</th>
+            <tr style={{ textAlign: 'left', background: 'var(--bg-secondary)' }}>
+              <th style={{ padding: '16px 24px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Pelanggan & Paket</th>
+              <th style={{ padding: '16px 24px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', textAlign: 'center' }}>Total</th>
+              <th style={{ padding: '16px 24px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', textAlign: 'center' }}>Status</th>
+              <th style={{ padding: '16px 24px', fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', textAlign: 'right' }}>Aksi</th>
             </tr>
           </thead>
           <tbody>
-            {activeBookings.map(book => (
-              <tr key={book.id}>
-                <td>
-                  <div style={{ fontWeight: 600 }}>{book.name}</div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{book.package}</div>
-                </td>
-                <td style={{ fontWeight: 700, textAlign: 'center' }}>{book.amount}</td>
-                <td style={{ textAlign: 'center' }}><span className={`badge ${book.statusClass}`}>{book.statusText}</span></td>
-                <td>
-                  <div className="action-buttons">
-                    <button className="action-btn view" title="View"><Eye size={16} /></button>
-                    <button className="action-btn edit" title="Edit"><Edit size={16} /></button>
-                    <button className="action-btn delete" title="Delete"><Trash2 size={16} /></button>
-                  </div>
+            {latestBookings.length === 0 ? (
+              <tr>
+                <td colSpan="4" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                  Tidak ada data pemesanan terbaru.
                 </td>
               </tr>
-            ))}
+            ) : (
+              latestBookings.map((book) => (
+                <tr key={book.id || book._id} className="table-row-hover" style={{ borderBottom: '1px solid var(--border-color)' }}>
+                  <td style={{ padding: '16px 24px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div style={{ 
+                        width: '36px', 
+                        height: '36px', 
+                        borderRadius: '10px', 
+                        background: 'var(--primary-light)', 
+                        color: 'var(--primary)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: 700,
+                        fontSize: '14px'
+                      }}>
+                        {(book.user?.name || 'U').charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '14px' }}>{book.user?.name || `User ID: ${book.userId}`}</div>
+                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '1px' }}>{book.package?.name || 'Paket Liburan'}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style={{ padding: '16px 24px', textAlign: 'center' }}>
+                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: '14px' }}>
+                      {formatCurrency(book.totalPrice)}
+                    </div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                      {book.bookingCode}
+                    </div>
+                  </td>
+                  <td style={{ padding: '16px 24px', textAlign: 'center' }}>
+                    <span className={`badge ${(book.status?.toUpperCase() === 'SUCCESS' || book.status?.toUpperCase() === 'SETTLEMENT' || book.status?.toUpperCase() === 'CAPTURE' || book.status?.toUpperCase() === 'PAID') ? 'success' : book.status?.toUpperCase() === 'PENDING' ? 'pending' : 'cancelled'}`} style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 700 }}>
+                      {(book.status?.toUpperCase() === 'SUCCESS' || book.status?.toUpperCase() === 'SETTLEMENT' || book.status?.toUpperCase() === 'CAPTURE' || book.status?.toUpperCase() === 'PAID') ? 'Sukses' : book.status?.toUpperCase() === 'PENDING' ? 'Pending' : 'Batal'}
+                    </span>
+                  </td>
+                  <td style={{ padding: '16px 24px', textAlign: 'right' }}>
+                    <button 
+                      className="action-btn view" 
+                      onClick={() => navigate('/bookings')}
+                      style={{ 
+                        width: '32px', 
+                        height: '32px', 
+                        borderRadius: '8px', 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        background: 'var(--bg-secondary)',
+                        color: 'var(--text-secondary)',
+                        border: 'none',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <Eye size={16} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
