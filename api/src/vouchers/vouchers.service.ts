@@ -13,7 +13,7 @@ import { Prisma } from '../generated/prisma/client.js';
 
 @Injectable()
 export class VouchersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   /**
    * 1. Admin Create Voucher
@@ -81,6 +81,21 @@ export class VouchersService {
       message: 'Berhasil mendapatkan voucher yang tersedia',
       metadata: { count: availableVouchers.length },
       data: availableVouchers,
+    };
+  }
+
+  /**
+   * 2. Get All Voucher (Admin Only)
+   */
+  async getAllVouchers() {
+    const vouchers = await this.prisma.voucher.findMany();
+
+    return {
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Berhasil mendapatkan semua voucher',
+      metadata: { count: vouchers.length },
+      data: vouchers,
     };
   }
 
