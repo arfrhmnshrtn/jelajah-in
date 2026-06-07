@@ -17,7 +17,8 @@ export class VouchersController {
     return this.vouchersService.create(createVoucherDto);
   }
 
-
+  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
   @Get('available')
   getAvailableVouchers() {
     return this.vouchersService.getAvailableVouchers();
