@@ -1,25 +1,53 @@
-import { Injectable } from '@nestjs/common';
-import { HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpStatus,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
 import { PrismaService } from '../prisma.service';
-import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { MidtransService } from '../midtrans/midtrans.service';
-import { metadata } from 'reflect-metadata/no-conflict';
 import { nanoid } from 'nanoid';
 import { VoucherHelper } from '../vouchers/helpers/voucher.helper';
-import { BadRequestException } from '@nestjs/common';
+
 @Injectable()
 export class BookingService {
   constructor(
-    private prisma: PrismaService,
-    private midtransService: MidtransService,
+    private readonly prisma: PrismaService,
+    private readonly midtransService: MidtransService,
   ) {}
 
-  async create(
-    userId: number,
-    createBookingDto: CreateBookingDto,
-  ) {
+  // ========================
+  // Private Helper Methods
+  // ========================
+
+  private async findBookingOrFail(id: number) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking tidak ditemukan');
+    }
+
+    return booking;
+  }
+
+  private buildListResponse(message: string, data: any[]) {
+    return {
+      success: true,
+      message,
+      metadata: { status: HttpStatus.OK, count: data.length },
+      data,
+    };
+  }
+
+  // ========================
+  // Public Methods
+  // ========================
+
+  async create(userId: number, createBookingDto: CreateBookingDto) {
     const { packageId, quantity, date, voucherCode } = createBookingDto;
 
     // Gunakan Prisma transaction untuk atomic operation (Booking + Voucher Usage)
@@ -53,13 +81,12 @@ export class BookingService {
           where: { voucherId: voucher.id, userId },
         });
 
-        // Validasi ketersediaan voucher. Akan melempar Exception (Opsi A) jika gagal.
+        // Validasi ketersediaan voucher
         VoucherHelper.validateVoucherAvailability(voucher, userUsages, originalPrice);
 
         // Hitung diskon
         discountAmount = VoucherHelper.calculateDiscount(voucher, originalPrice);
-        finalPrice = originalPrice - discountAmount;
-        if (finalPrice < 0) finalPrice = 0;
+        finalPrice = Math.max(originalPrice - discountAmount, 0);
 
         appliedVoucherId = voucher.id;
 
@@ -76,11 +103,11 @@ export class BookingService {
       // 5. Simpan booking ke database dengan harga final
       const booking = await tx.booking.create({
         data: {
-          bookingCode: bookingCode,
-          userId: userId,
-          packageId: packageId,
+          bookingCode,
+          userId,
+          packageId,
           date: new Date(date),
-          quantity: quantity,
+          quantity,
           totalPrice: finalPrice,
           status: 'PENDING',
         },
@@ -91,16 +118,13 @@ export class BookingService {
         await tx.voucherUsage.create({
           data: {
             voucherId: appliedVoucherId,
-            userId: userId,
+            userId,
             bookingId: booking.id,
           },
         });
       }
 
-      // 7. PANGGIL MIDTRANS dengan finalPrice
-      // Jika finalPrice = 0, secara ideal langsung auto PENDING/PAID tanpa payment gateway,
-      // tetapi untuk saat ini asumsikan kita bypass ke midtrans.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      // 7. Panggil Midtrans dengan finalPrice
       const transaction: { token: string; redirect_url: string } =
         await this.midtransService.createTransaction(
           `ORDER-${booking.id}`,
@@ -120,86 +144,42 @@ export class BookingService {
   }
 
   async findAll() {
-    // return `This action returns all booking`;
-    const bookings = await this.prisma.booking.findMany();
-    return {
-      success: true,
-      message: 'Data booking berhasil ditemukan',
-      metadata: { status: HttpStatus.OK, count: bookings.length },
-      data: bookings,
-    };
+    const data = await this.prisma.booking.findMany();
+    return this.buildListResponse('Data booking berhasil ditemukan', data);
   }
 
-  // findOne(id: number) {
-  //   return this.prisma.booking.findUnique({
-  //     where: { id },
-  //   });
-  // }
-
-  // update(id: number, updateBookingDto: UpdateBookingDto) {
-  //   return `This action updates a #${id} booking`;
-  // }
+  async findByUser(userId: number) {
+    const data = await this.prisma.booking.findMany({
+      where: { userId },
+      include: { package: true },
+    });
+    return this.buildListResponse('Berhasil mengambil riwayat booking', data);
+  }
 
   async cancel(id: number, user: { sub: number; role: string }) {
-    // 🔹 cek dulu booking
-    const booking = await this.prisma.booking.findUnique({
-      where: { id },
-    });
-
-    if (!booking) {
-      throw new NotFoundException('Booking tidak ditemukan');
-    }
+    const booking = await this.findBookingOrFail(id);
 
     if (booking.userId !== user.sub && user.role !== 'ADMIN') {
       throw new ForbiddenException('Anda tidak berhak menghapus booking ini');
     }
 
     if (booking.status === 'CANCELED') {
-      return {
-        success: false,
-        message: 'Booking sudah dibatalkan!',
-        data: booking,
-      };
+      throw new BadRequestException('Booking sudah dibatalkan!');
     }
 
-    // 🔹 hanya boleh hapus jika masih PENDING
-    if (booking.status !== 'PENDING' ) {
-      return {
-        success: false,
-        message: 'Booking tidak bisa dibatalkan!',
-      };
+    if (booking.status !== 'PENDING') {
+      throw new BadRequestException('Booking tidak bisa dibatalkan!');
     }
 
-    // 🔹 baru delete
     await this.prisma.booking.update({
       where: { id },
-      data: {
-        status: 'CANCELED',
-      },
+      data: { status: 'CANCELED' },
     });
 
     return {
       success: true,
       message: 'Booking berhasil dibatalkan',
       data: booking,
-    };
-  }
-
-  async findByUser(userId: number) {
-    const data = await this.prisma.booking.findMany({
-      where: { userId },
-      include: {
-        package: true,
-      },
-    });
-
-    return {
-      success: true,
-      message: 'Berhasil mengambil riwayat booking',
-      metadata: {
-        count: data.length,
-      },
-      data,
     };
   }
 }
