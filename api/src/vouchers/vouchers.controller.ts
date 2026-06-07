@@ -9,9 +9,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 export class VouchersController {
   constructor(private readonly vouchersService: VouchersService) { }
 
-  /**
-   * 1. Admin Create Voucher
-   */
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Post()
@@ -19,17 +17,13 @@ export class VouchersController {
     return this.vouchersService.create(createVoucherDto);
   }
 
-  /**
-   * 2. Get Available Voucher (Public)
-   */
+
   @Get('available')
   getAvailableVouchers() {
     return this.vouchersService.getAvailableVouchers();
   }
 
-  /**
-   * 2. Get All Voucher (Admin Only)
-   */
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('all')
@@ -37,18 +31,12 @@ export class VouchersController {
     return this.vouchersService.getAllVouchers();
   }
 
-  /**
-   * 3. Get Available Voucher for Logged In User
-   */
   @UseGuards(JwtAuthGuard)
   @Get('available-for-me')
   getAvailableVouchersForUser(@Req() req) {
     return this.vouchersService.getAvailableVouchersForUser(req.user.sub);
   }
 
-  /**
-   * 4. Admin Get Voucher Usages (History)
-   */
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get(':id/usages')
