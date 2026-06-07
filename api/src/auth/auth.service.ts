@@ -14,13 +14,12 @@ import { UpdateUserDto } from './dto/update.user.dto';
 import * as path from 'path';
 import * as fs from 'fs';
 
-
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
-    private jwtService: JwtService,
-  ) { }
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   private readonly userSelectFields = {
     id: true,
@@ -41,7 +40,7 @@ export class AuthService {
       select: this.userSelectFields,
     });
 
-    const label = role === 'ADMIN' ? 'admin' : 'user';
+    const label = role.toLowerCase();
 
     return {
       success: true,
@@ -70,15 +69,11 @@ export class AuthService {
       throw new UnauthorizedException('Password salah');
     }
 
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    };
+    const payload = { sub: user.id, email: user.email, role: user.role };
 
     return {
       success: true,
-      status: 200,
+      status: HttpStatus.OK,
       message: 'Login berhasil',
       data: {
         access_token: this.jwtService.sign(payload),
@@ -104,20 +99,13 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const user = await this.prisma.user.create({
-      data: {
-        name: data.name,
-        email: data.email,
-        password: hashedPassword,
-        role,
-      },
+      data: { name: data.name, email: data.email, password: hashedPassword, role },
     });
 
     return {
       success: true,
       message: 'Register berhasil',
-      metadata: {
-        status_code: HttpStatus.CREATED,
-      },
+      metadata: { status_code: HttpStatus.CREATED },
       data: {
         id: user.id,
         name: user.name,
@@ -126,6 +114,19 @@ export class AuthService {
         createdAt: user.createdAt,
       },
     };
+  }
+
+  private saveAvatar(file: Express.Multer.File): string {
+    const uploadDir = path.join(__dirname, '..', '..', 'avatar');
+
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const fileName = `${Date.now()}-${file.originalname}`;
+    fs.writeFileSync(path.join(uploadDir, fileName), file.buffer);
+
+    return `/avatar/${fileName}`;
   }
 
   // ========================
@@ -159,7 +160,7 @@ export class AuthService {
   logout() {
     return {
       success: true,
-      status: 200,
+      status: HttpStatus.OK,
       message: 'Logout berhasil',
     };
   }
@@ -170,41 +171,16 @@ export class AuthService {
     userPayload: { sub: number; role: string },
     file?: Express.Multer.File,
   ) {
-    const targetId = parseInt(userId as any, 10);
-    const requestorId = parseInt(userPayload?.sub as any, 10);
-
-    if (targetId !== requestorId && userPayload?.role !== 'ADMIN') {
-      throw new ForbiddenException(
-        'Akses ditolak!!',
-      );
+    if (userId !== userPayload.sub && userPayload.role !== 'ADMIN') {
+      throw new ForbiddenException('Akses ditolak!!');
     }
 
-    const updateData: any = {};
+    const updateData: Record<string, any> = {};
 
     if (data.name) updateData.name = data.name;
     if (data.email) updateData.email = data.email;
-
-    if (data.password) {
-      const hashedPassword = await bcrypt.hash(data.password, 10);
-      updateData.password = hashedPassword;
-    }
-
-    // proses upload file avatar (hanya jika file dikirim)
-    if (file) {
-      const uploadDir = path.join(__dirname, '..', '..', 'avatar');
-
-      // buat folder jika belum ada
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-
-      const fileName = `${Date.now()}-${file.originalname}`;
-      const filePath = path.join(uploadDir, fileName);
-      fs.writeFileSync(filePath, file.buffer);
-
-      // simpan path relatif ke database
-      updateData.avatar = `/avatar/${fileName}`;
-    }
+    if (data.password) updateData.password = await bcrypt.hash(data.password, 10);
+    if (file) updateData.avatar = this.saveAvatar(file);
 
     const updatedUser = await this.prisma.user.update({
       where: { id: userId },
@@ -214,7 +190,7 @@ export class AuthService {
 
     return {
       success: true,
-      status: 200,
+      status: HttpStatus.OK,
       message: 'Update user berhasil',
       data: updatedUser,
     };
