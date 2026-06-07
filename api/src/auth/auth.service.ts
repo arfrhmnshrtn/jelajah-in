@@ -21,6 +21,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
   ) { }
+
   private readonly userSelectFields = {
     id: true,
     avatar: true,
@@ -30,69 +31,27 @@ export class AuthService {
     createdAt: true,
   };
 
-  async getAllUser() {
+  // ========================
+  // Private Helper Methods
+  // ========================
+
+  private async getAllByRole(role: 'USER' | 'ADMIN') {
     const data = await this.prisma.user.findMany({
-      where: { role: 'USER' },
+      where: { role },
       select: this.userSelectFields,
     });
 
+    const label = role === 'ADMIN' ? 'admin' : 'user';
+
     return {
       success: true,
-      message: 'Get all user berhasil',
+      message: `Get all ${label} berhasil`,
       metadata: { status: HttpStatus.OK, count: data.length },
       data,
     };
   }
 
-  async getAllAdmin() {
-    const data = await this.prisma.user.findMany({
-      where: { role: 'ADMIN' },
-      select: this.userSelectFields,
-    });
-
-    return {
-      success: true,
-      message: 'Get all admin berhasil',
-      metadata: { status: HttpStatus.OK, count: data.length },
-      data,
-    };
-  }
-
-  async register(data: RegisterDto) {
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email: data.email },
-    });
-
-    if (existingUser) {
-      throw new BadRequestException('Email sudah digunakan');
-    }
-
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-
-    const user = await this.prisma.user.create({
-      data: {
-        name: data.name,
-        email: data.email,
-        password: hashedPassword,
-      },
-    });
-
-    return {
-      staus: true,
-      message: 'Register berhasil',
-      metadata: {
-        status_code: HttpStatus.CREATED,
-      },
-      data: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        createdAt: user.createdAt,
-      },
-    };
-  }
-
-  async loginUser(data: LoginDto) {
+  private async login(data: LoginDto, expectedRole: 'USER' | 'ADMIN') {
     const user = await this.prisma.user.findUnique({
       where: { email: data.email },
     });
@@ -101,48 +60,8 @@ export class AuthService {
       throw new UnauthorizedException('Email tidak ditemukan');
     }
 
-    if (user.role !== 'USER') {
-      throw new ForbiddenException('Hanya USER yang dapat login!!');
-    }
-
-    const isMatch = await bcrypt.compare(data.password, user.password);
-
-    if (!isMatch) {
-      throw new UnauthorizedException('Password salah');
-    }
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    };
-
-    return {
-      success: true,
-      status: 200,
-      message: 'Login berhasil',
-      data: {
-        access_token: this.jwtService.sign(payload),
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        },
-      },
-    };
-  }
-
-  async loginAdmin(data: LoginDto) {
-    const user = await this.prisma.user.findUnique({
-      where: { email: data.email },
-    });
-
-    if (!user) {
-      throw new UnauthorizedException('Email tidak ditemukan');
-    }
-
-    if (user.role !== 'ADMIN') {
-      throw new ForbiddenException('Hanya ADMIN yang dapat login!!');
+    if (user.role !== expectedRole) {
+      throw new ForbiddenException(`Hanya ${expectedRole} yang dapat login!!`);
     }
 
     const isMatch = await bcrypt.compare(data.password, user.password);
@@ -171,6 +90,70 @@ export class AuthService {
         },
       },
     };
+  }
+
+  private async createUser(data: RegisterDto, role: 'USER' | 'ADMIN' = 'USER') {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException('Email sudah digunakan');
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    const user = await this.prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        role,
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Register berhasil',
+      metadata: {
+        status_code: HttpStatus.CREATED,
+      },
+      data: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+    };
+  }
+
+  // ========================
+  // Public Methods
+  // ========================
+
+  async getAllUser() {
+    return this.getAllByRole('USER');
+  }
+
+  async getAllAdmin() {
+    return this.getAllByRole('ADMIN');
+  }
+
+  async register(data: RegisterDto) {
+    return this.createUser(data, 'USER');
+  }
+
+  async registerAdmin(data: RegisterDto) {
+    return this.createUser(data, 'ADMIN');
+  }
+
+  async loginUser(data: LoginDto) {
+    return this.login(data, 'USER');
+  }
+
+  async loginAdmin(data: LoginDto) {
+    return this.login(data, 'ADMIN');
   }
 
   logout() {
@@ -234,39 +217,6 @@ export class AuthService {
       status: 200,
       message: 'Update user berhasil',
       data: updatedUser,
-    };
-  }
-
-  // register admin
-  async registerAdmin(data: RegisterDto) {
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email: data.email },
-    });
-
-    if (existingUser) {
-      throw new BadRequestException('Email sudah digunakan');
-    }
-
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-
-    const user = await this.prisma.user.create({
-      data: {
-        name: data.name,
-        email: data.email,
-        password: hashedPassword,
-        role: 'ADMIN',
-      },
-    });
-
-    return {
-      message: 'Register berhasil',
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt,
-      },
     };
   }
 }
