@@ -5,8 +5,11 @@ import { useAppStore } from '../../store/useAppStore';
 import InputField from '../../components/InputField';
 import CustomButton from '../../components/CustomButton';
 
+// 🚀 IMPORT AXIOS CLIENT DI SINI
+// (Pastikan path/lokasi foldernya sesuai dengan letak file axiosClient.js milikmu)
+import axiosClient from '../../api/axiosClient'; 
+
 export default function RegisterScreen({ navigation }: any) {
-  // Catatan: 'register' dihapus dari useAppStore karena data sekarang disimpan di database server
   const { isDarkMode } = useAppStore(); 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -23,23 +26,19 @@ export default function RegisterScreen({ navigation }: any) {
   };
 
   const handleRegister = async () => {
-    // Kosongkan pesan setiap kali tombol ditekan
     setMsg({ text: '', type: '' });
     
-    // 1. Validasi Tidak Boleh Kosong
     if (!name || !email || !password) {
       setMsg({ text: 'Semua kolom wajib diisi!', type: 'error' });
       return;
     }
 
-    // 2. Validasi Format Email
     const emailRegex = /\S+@\S+\.\S+/;
     if (!emailRegex.test(email)) {
       setMsg({ text: 'Format email tidak valid!', type: 'error' });
       return;
     }
 
-    // 3. Validasi Minimal Karakter Password
     if (password.length < 6) {
       setMsg({ text: 'Kata sandi minimal 6 karakter!', type: 'error' });
       return;
@@ -48,51 +47,27 @@ export default function RegisterScreen({ navigation }: any) {
     setIsLoading(true);
 
     try {
-      // 🛠️ PERUBAHAN 1: Panggil base URL dari .env (Sama seperti Login)
-      const baseUrl = process.env.EXPO_PUBLIC_API_URL || 'https://3651-114-10-100-230.ngrok-free.app/api';
-      
-      const request = await fetch(`${baseUrl}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'ngrok-skip-browser-warning': 'true' // 🛠️ PERUBAHAN 2: Penangkal Wajib Ngrok
-        },
-        body: JSON.stringify({ 
-          name: name.trim(), // Tambahan .trim() biar spasi tak sengaja terhapus
-          email: email.trim(), 
-          password: password 
-        }),
+      // 🛠️ SANGAT SINGKAT: Langsung tembak endpoint-nya saja!
+      // Base URL, Header, dan pencegah Ngrok otomatis ditambahkan oleh axiosClient
+      const response = await axiosClient.post('/auth/register', {
+        name: name.trim(),
+        email: email.trim(),
+        password: password
       });
 
-      // 🛠️ PERUBAHAN 3: Parsing aman anti-crash (Sama seperti Login)
-      const rawText = await request.text();
-      let response;
-      try {
-        response = JSON.parse(rawText);
-      } catch (e) {
-        throw new Error('Server membalas dengan format yang salah.');
-      }
-
-      // Jika ada error dari server (misal email sudah terpakai)
-      if (!request.ok) {
-        setMsg({ text: response.message || 'Pendaftaran gagal!', type: 'error' });
-        setIsLoading(false);
-        return;
-      }
-
       // ✅ Kalau sukses
-      console.log('Register success:', response);
+      console.log('Register success:', response.data);
       
-      // Tampilkan teks sukses berwarna hijau
       setMsg({ text: 'Akun berhasil dibuat! Mengalihkan...', type: 'success' });
-      
-      // Tunggu 1.5 detik agar user bisa baca pesan sukses, lalu pindah ke halaman Login
       setTimeout(() => navigation.replace('Login'), 1500);
 
     } catch (error: any) {
-      console.log(error);
-      setMsg({ text: error.message || 'Terjadi kesalahan jaringan. Coba lagi!', type: 'error' });
+      console.log('Register Error:', error);
+      
+      // 🛠️ TANGKAP ERROR DARI SERVER: axios langsung memisahkan error di error.response.data
+      const errorMsg = error.response?.data?.message || 'Pendaftaran gagal. Periksa jaringan Anda!';
+      setMsg({ text: errorMsg, type: 'error' });
+      
     } finally {
       setIsLoading(false);
     }
@@ -115,7 +90,6 @@ export default function RegisterScreen({ navigation }: any) {
           <InputField label="Alamat Email" iconName="mail-outline" placeholder="contoh@email.com" value={email} onChangeText={setEmail} autoCapitalize="none" />
           <InputField label="Kata Sandi" iconName="lock-closed-outline" placeholder="Buat kata sandi yang kuat" isPassword={true} value={password} onChangeText={setPassword} />
 
-          {/* Render pesan sukses/error di sini */}
           {msg.text ? (
             <Text style={[styles.msgText, { color: msg.type === 'error' ? '#EF4444' : '#10B981' }]}>{msg.text}</Text>
           ) : null}
