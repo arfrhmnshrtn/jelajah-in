@@ -5,11 +5,7 @@ import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception
 
 @Injectable()
 export class BookmarksService {
-  constructor(private readonly prisma: PrismaService) {}
-
-  // ========================
-  // Private Helper Methods
-  // ========================
+  constructor(private readonly prisma: PrismaService) { }
 
   private async findBookmarkOrFail(where: { id?: number; userId?: number; packageId?: number }) {
     const bookmark = where.id
@@ -35,10 +31,6 @@ export class BookmarksService {
       data: result,
     };
   }
-
-  // ========================
-  // Public Methods
-  // ========================
 
   async create(userId: number, packageId: number) {
     const existing = await this.prisma.bookmark.findFirst({
