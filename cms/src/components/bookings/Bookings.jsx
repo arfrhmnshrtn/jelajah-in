@@ -7,9 +7,11 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import BookingFilters from './BookingFilters';
 import BookingTable from './BookingTable';
+import { useAppContext } from '../../context/AppContext';
 import BookingDetailModal from './BookingDetailModal';
 
-const Bookings = ({ bookings, setBookings, users = [], packages = [], t }) => {
+const Bookings = () => {
+  const { bookings, setBookings, users, packages, t } = useAppContext();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('Semua Status');
   const [selectedBooking, setSelectedBooking] = useState(null);

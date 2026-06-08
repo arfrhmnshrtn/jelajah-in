@@ -3,8 +3,10 @@ import { Search } from 'lucide-react';
 import AdminTable from './AdminTable';
 import AdminModalsContainer from './AdminModalsContainer';
 import AdminHeader from './AdminHeader';
+import { useAppContext } from '../../context/AppContext';
 
-const DataAdmin = ({ admins, setAdmins, t }) => {
+const DataAdmin = () => {
+  const { admins, setAdmins, t } = useAppContext();
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAdmin, setEditingAdmin] = useState(null);
@@ -46,7 +48,7 @@ const DataAdmin = ({ admins, setAdmins, t }) => {
           body: JSON.stringify({
             name: formData.name,
             email: formData.email,
-            password: formData.password
+            password: formData.password || 'AdminJelajah123!'
           })
         });
 

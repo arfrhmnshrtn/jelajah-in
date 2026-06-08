@@ -5,14 +5,14 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
-import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('booking')
 export class BookingController {
@@ -20,15 +20,12 @@ export class BookingController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(
-    @Req() req,
-    userId: number,
-    @Body()
-    createBookingDto: CreateBookingDto,
-  ) {
+  create(@Req() req, @Body() createBookingDto: CreateBookingDto) {
     return this.bookingService.create(req.user.sub, createBookingDto);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @Get()
   findAll() {
     return this.bookingService.findAll();

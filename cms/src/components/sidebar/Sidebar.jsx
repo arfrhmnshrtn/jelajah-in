@@ -11,6 +11,8 @@ import {
   ChevronDown
 } from 'lucide-react';
 
+import logo from '../../assets/logo-jelajah.png';
+
 const Sidebar = ({ isCollapsed, onLogout, t }) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
@@ -22,8 +24,24 @@ const Sidebar = ({ isCollapsed, onLogout, t }) => {
 
   return (
     <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-      <div className="sidebar-header" style={{ justifyContent: isCollapsed ? 'center' : 'flex-start', padding: isCollapsed ? '24px 0' : '24px' }}>
-        {isCollapsed ? 'J' : 'JELAJAH.IN'}
+      <div className="sidebar-header" style={{ 
+        padding: '24px 0',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%'
+      }}>
+        <span style={{ 
+          fontSize: '18px', 
+          fontWeight: '800', 
+          letterSpacing: '-0.5px',
+          color: '#ffffff',
+          whiteSpace: 'nowrap',
+          textAlign: 'center',
+          width: '100%'
+        }}>
+          {isCollapsed ? 'J' : 'JELAJAH.IN'}
+        </span>
       </div>
       
       <div className="sidebar-menu">

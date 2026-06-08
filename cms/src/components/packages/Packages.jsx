@@ -5,8 +5,10 @@ import PackageModal from './PackageModal';
 import DeleteConfirmModal from '../shared/DeleteConfirmModal';
 import FeedbackModal from '../shared/FeedbackModal';
 import PackageTable from './PackageTable';
+import { useAppContext } from '../../context/AppContext';
 
-const Packages = ({ packages, setPackages, t }) => {
+const Packages = () => {
+  const { packages, setPackages, t } = useAppContext();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
