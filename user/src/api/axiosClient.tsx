@@ -2,10 +2,12 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // 1. Murni 100% menarik dari .env tanpa cadangan hardcode!
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://ba83-103-59-45-37.ngrok-free.app/api';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL
 
 // Alarm otomatis: Muncul di terminal kalau .env lupa diisi atau cache belum dibersihkan
-
+if (!BASE_URL) {
+  console.warn("⚠️ AWAS: EXPO_PUBLIC_API_URL di file .env kosong atau belum terbaca Expo!");
+}
 
 const axiosClient = axios.create({
   baseURL: BASE_URL,
