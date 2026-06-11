@@ -22,7 +22,6 @@ export class VouchersService {
     const { code, discountValue, maxDiscount, minPurchase, ...rest } =
       createVoucherDto;
 
-    // Check if code is unique
     const existingVoucher = await this.prisma.voucher.findUnique({
       where: { code },
     });
