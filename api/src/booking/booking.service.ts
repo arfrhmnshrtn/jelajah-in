@@ -71,7 +71,6 @@ export class BookingService {
           where: { voucherId: voucher.id, userId },
         });
 
-        // Validasi ketersediaan voucher
         VoucherHelper.validateVoucherAvailability(voucher, userUsages, originalPrice);
 
         // Hitung diskon
