@@ -64,10 +64,6 @@ export class VouchersService {
         endDate: {
           gte: now,
         },
-        // kuota masih tersedia (quota > usedCount)
-        // Since Prisma doesn't support comparing columns directly in where easily without raw query or special preview features,
-        // we can filter them after fetching, or using a raw query.
-        // It's safer to fetch and filter, or we use a basic filter and then array filter.
       },
     });
 
