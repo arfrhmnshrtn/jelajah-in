@@ -44,7 +44,6 @@ export class BookingService {
   async create(userId: number, createBookingDto: CreateBookingDto) {
     const { packageId, quantity, date, voucherCode } = createBookingDto;
 
-    // Gunakan Prisma transaction untuk atomic operation (Booking + Voucher Usage)
     return this.prisma.$transaction(async (tx) => {
       // 1. Ambil data package
       const paket = await tx.package.findUnique({
