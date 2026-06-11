@@ -59,7 +59,7 @@ export class VouchersService {
       where: {
         isActive: true,
         startDate: {
-          lte: now, // startDate sudah dimulai
+          lte: now,
         },
         endDate: {
           gte: now, // belum expired
