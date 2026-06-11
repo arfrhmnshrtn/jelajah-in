@@ -84,7 +84,6 @@ export class BookingService {
         });
       }
 
-      // 4. Generate booking code
       const bookingCode = `TRX-${nanoid(4).toUpperCase()}`;
 
       // 5. Simpan booking ke database dengan harga final
