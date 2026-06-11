@@ -40,9 +40,6 @@ export class BookingService {
     };
   }
 
-  // ========================
-  // Public Methods
-  // ========================
 
   async create(userId: number, createBookingDto: CreateBookingDto) {
     const { packageId, quantity, date, voucherCode } = createBookingDto;
