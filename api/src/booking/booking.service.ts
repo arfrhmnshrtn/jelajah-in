@@ -98,7 +98,6 @@ export class BookingService {
         },
       });
 
-      // 6. Jika pakai voucher, simpan riwayat penggunaan (VoucherUsage)
       if (appliedVoucherId) {
         await tx.voucherUsage.create({
           data: {
