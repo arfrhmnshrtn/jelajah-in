@@ -53,7 +53,6 @@ export class BookingService {
         throw new NotFoundException('Paket tidak ditemukan');
       }
 
-      // 2. Hitung harga awal
       const originalPrice = paket.price * quantity;
       let finalPrice = originalPrice;
       let discountAmount = 0;
