@@ -78,7 +78,6 @@ export class BookingService {
 
         appliedVoucherId = voucher.id;
 
-        // Tambah counter pemakaian voucher
         await tx.voucher.update({
           where: { id: voucher.id },
           data: { usedCount: { increment: 1 } },
