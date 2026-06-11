@@ -126,9 +126,6 @@ export class AuthService {
     return `/avatar/${fileName}`;
   }
 
-  // ========================
-  // Public Methods
-  // ========================
 
   async getAllUser() {
     return this.getAllByRole('USER');
