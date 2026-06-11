@@ -117,7 +117,6 @@ export class VouchersService {
       .filter((v) => v.quota > v.usedCount)
       .filter((v) => v.voucherUsages.length < v.userLimit)
       .map((v) => {
-        // Hilangkan property voucherUsages agar response lebih clean
         const { voucherUsages, ...rest } = v;
         return rest;
       });
