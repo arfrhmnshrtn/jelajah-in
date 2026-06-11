@@ -99,7 +99,6 @@ export class VouchersService {
   async getAvailableVouchersForUser(userId: number) {
     const now = new Date();
 
-    // Fetch active vouchers, unexpired, started
     const vouchers = await this.prisma.voucher.findMany({
       where: {
         isActive: true,
