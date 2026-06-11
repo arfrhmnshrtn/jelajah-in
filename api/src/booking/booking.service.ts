@@ -73,7 +73,6 @@ export class BookingService {
 
         VoucherHelper.validateVoucherAvailability(voucher, userUsages, originalPrice);
 
-        // Hitung diskon
         discountAmount = VoucherHelper.calculateDiscount(voucher, originalPrice);
         finalPrice = Math.max(originalPrice - discountAmount, 0);
 
