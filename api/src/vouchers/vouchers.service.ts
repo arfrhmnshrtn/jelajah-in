@@ -106,7 +106,6 @@ export class VouchersService {
         endDate: { gte: now },
       },
       include: {
-        // Hanya ambil riwayat penggunaan untuk user yang sedang login
         voucherUsages: {
           where: { userId },
           select: { id: true },
