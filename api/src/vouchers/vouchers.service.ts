@@ -62,7 +62,7 @@ export class VouchersService {
           lte: now,
         },
         endDate: {
-          gte: now, // belum expired
+          gte: now,
         },
         // kuota masih tersedia (quota > usedCount)
         // Since Prisma doesn't support comparing columns directly in where easily without raw query or special preview features,
