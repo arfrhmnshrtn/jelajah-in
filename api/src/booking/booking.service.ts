@@ -18,9 +18,6 @@ export class BookingService {
     private readonly midtransService: MidtransService,
   ) {}
 
-  // ========================
-  // Private Helper Methods
-  // ========================
 
   private async findBookingOrFail(id: number) {
     const booking = await this.prisma.booking.findUnique({
