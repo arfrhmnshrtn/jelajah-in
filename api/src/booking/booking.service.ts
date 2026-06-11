@@ -45,7 +45,6 @@ export class BookingService {
     const { packageId, quantity, date, voucherCode } = createBookingDto;
 
     return this.prisma.$transaction(async (tx) => {
-      // 1. Ambil data package
       const paket = await tx.package.findUnique({
         where: { id: packageId },
       });
