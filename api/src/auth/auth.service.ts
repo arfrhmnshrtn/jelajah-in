@@ -30,9 +30,6 @@ export class AuthService {
     createdAt: true,
   };
 
-  // ========================
-  // Private Helper Methods
-  // ========================
 
   private async getAllByRole(role: 'USER' | 'ADMIN') {
     const data = await this.prisma.user.findMany({
