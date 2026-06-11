@@ -58,7 +58,6 @@ export class BookingService {
       let discountAmount = 0;
       let appliedVoucherId: string | null = null;
 
-      // 3. Proses voucher jika user memasukkan voucherCode
       if (voucherCode) {
         const voucher = await tx.voucher.findUnique({
           where: { code: voucherCode },
