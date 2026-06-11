@@ -67,7 +67,6 @@ export class VouchersService {
       },
     });
 
-    // Filter valid quota
     const availableVouchers = vouchers.filter((v) => v.quota > v.usedCount);
 
     return {
