@@ -113,8 +113,6 @@ export class VouchersService {
       },
     });
 
-    // 1. Filter kuota masih tersedia secara global
-    // 2. Filter pemakaian user (voucherUsages.length) belum mencapai limit (userLimit)
     const availableVouchers = vouchers
       .filter((v) => v.quota > v.usedCount)
       .filter((v) => v.voucherUsages.length < v.userLimit)
