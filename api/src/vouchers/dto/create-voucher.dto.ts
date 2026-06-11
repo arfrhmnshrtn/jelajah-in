@@ -36,7 +36,7 @@ export class MaxDiscountPercentageConstraint implements ValidatorConstraintInter
     if (object.discountType === DiscountType.PERCENTAGE) {
       return value <= 100;
     }
-    return true; // if not percentage, any max is fine
+    return true;
   }
 
   defaultMessage(args: ValidationArguments) {
