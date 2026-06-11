@@ -86,7 +86,6 @@ export class BookingService {
 
       const bookingCode = `TRX-${nanoid(4).toUpperCase()}`;
 
-      // 5. Simpan booking ke database dengan harga final
       const booking = await tx.booking.create({
         data: {
           bookingCode,
