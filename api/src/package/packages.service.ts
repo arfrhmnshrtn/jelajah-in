@@ -36,9 +36,6 @@ export class PackagesService {
     }
   }
 
-  // ========================
-  // Public Methods
-  // ========================
 
   async create(createPackageDto: CreatePackageDto) {
     await this.prisma.package.create({
