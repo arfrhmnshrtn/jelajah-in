@@ -4,7 +4,7 @@ import { BookingController } from './booking.controller';
 import { MidtransModule } from '../midtrans/midtrans.module';
 
 @Module({
-  imports: [MidtransModule], // 🔥 WAJIB
+  imports: [MidtransModule],
   controllers: [BookingController],
   providers: [BookingService],
 })
