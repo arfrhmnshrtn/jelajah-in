@@ -108,7 +108,6 @@ export class BookingService {
         });
       }
 
-      // 7. Panggil Midtrans dengan finalPrice
       const transaction: { token: string; redirect_url: string } =
         await this.midtransService.createTransaction(
           `ORDER-${booking.id}`,
