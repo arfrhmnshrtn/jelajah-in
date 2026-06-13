@@ -72,16 +72,6 @@ export default function ProfileScreen({ navigation }: any) {
 
     if (currentUser && currentUser.token) {
       try {
-        // Blok request server akan diletakkan di sini
-      } catch (error: any) {
-        console.log('Server offline:', error.message);
-      }
-    } else {
-      alert("Profil berhasil diperbarui secara lokal.");
-    }
-
-    if (currentUser && currentUser.token) {
-      try {
         const formData = new FormData();
         formData.append('name', editName);
         formData.append('email', editEmail);
@@ -103,8 +93,15 @@ export default function ProfileScreen({ navigation }: any) {
           } as any); 
         }
 
+        await axiosClient.post('/auth/update', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        
+        alert("Profil berhasil diperbarui di Memori Lokal dan Server.");
+
       } catch (error: any) {
         console.log('Server offline:', error.message);
+        alert("Profil berhasil diperbarui secara lokal (Server offline).");
       }
     } else {
       alert("Profil berhasil diperbarui secara lokal.");
