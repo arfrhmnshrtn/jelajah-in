@@ -125,6 +125,7 @@ export default function BookingScreen({ route, navigation }: any) {
 
   const handleApplyPromo = () => {
     if (!promoCode.trim()) {
+      Alert.alert("Perhatian", "Silakan masukkan kode voucher terlebih dahulu.");
       return;
     }
   };
