@@ -139,6 +139,11 @@ export default function BookingScreen({ route, navigation }: any) {
       return; 
     }
     // 🚀 --- END: KODE DUMMY ---
+
+    // Logika asli pencarian voucher dari server
+    const matchedVoucher = availableVouchers.find(
+      (v) => v.code.toUpperCase() === promoCode.trim().toUpperCase()
+    );
   };
 
   const handlePayment = async () => {
