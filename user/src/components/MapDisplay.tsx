@@ -12,7 +12,9 @@ interface MapDisplayProps {
 export default function MapDisplay({ latitude, longitude, name, location }: MapDisplayProps) {
   return (
     <View>
-      
+        <MapView style={styles.map}>
+        
+        </MapView>
     </View>
   );
 }
