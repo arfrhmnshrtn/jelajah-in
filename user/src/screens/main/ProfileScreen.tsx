@@ -79,6 +79,20 @@ export default function ProfileScreen({ navigation }: any) {
     } else {
       alert("Profil berhasil diperbarui secara lokal.");
     }
+
+    if (currentUser && currentUser.token) {
+      try {
+        const formData = new FormData();
+        formData.append('name', editName);
+        formData.append('email', editEmail);
+        formData.append('_method', 'PATCH');
+
+      } catch (error: any) {
+        console.log('Server offline:', error.message);
+      }
+    } else {
+      alert("Profil berhasil diperbarui secara lokal.");
+    }
   };
 
   // Fungsi eksekusi saat tombol keluar ditekan di Pop-up
