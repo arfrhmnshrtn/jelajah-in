@@ -149,6 +149,11 @@ export default function DetailScreen({ route, navigation }: any) {
 
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Deskripsi</Text>
         <Text style={[styles.description, { color: theme.textSub }]}>{item.description || "Tidak ada deskripsi tersedia untuk wisata ini."}</Text>
+
+        {item.latitude && item.longitude && (
+          <View style={styles.mapSection}>
+          </View>
+        )}
       </ScrollView>
 
       {/* BOTTOM BAR */}
