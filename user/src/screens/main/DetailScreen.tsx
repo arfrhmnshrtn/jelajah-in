@@ -154,7 +154,15 @@ export default function DetailScreen({ route, navigation }: any) {
           <View style={styles.mapSection}>
             <Text style={[styles.sectionTitle, { color: theme.text, marginTop: 24 }]}>Lokasi Peta</Text>
             <View style={styles.mapContainer}>
-              <MapView style={styles.map}>
+              <MapView
+                style={styles.map}
+                initialRegion={{
+                  latitude: parseFloat(item.latitude),
+                  longitude: parseFloat(item.longitude),
+                  latitudeDelta: 0.05,
+                  longitudeDelta: 0.05,
+                }}
+              >
               </MapView>
             </View>
           </View>
