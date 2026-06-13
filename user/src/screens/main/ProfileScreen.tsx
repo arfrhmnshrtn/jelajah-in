@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppStore } from '../../store/useAppStore';
 import InputField from '../../components/InputField';
 import CustomButton from '../../components/CustomButton';
+import axiosClient from '../../api/axiosClient';
 
 export default function ProfileScreen({ navigation }: any) {
   const { isDarkMode, toggleDarkMode, currentUser, logout } = useAppStore();
