@@ -21,6 +21,8 @@ import MapView, { Marker } from 'react-native-maps';
 
 const { width } = Dimensions.get('window');
 
+const isWeb = Platform.OS === 'web';
+
 export default function DetailScreen({ route, navigation }: any) {
   const { item } = route.params;
   const { isDarkMode, currentUser } = useAppStore();
