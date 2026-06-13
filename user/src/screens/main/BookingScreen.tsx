@@ -147,7 +147,9 @@ export default function BookingScreen({ route, navigation }: any) {
     if (matchedVoucher) {
       
     } else {
-      
+      setDiscount(0);
+      setIsPromoApplied(false);
+      Alert.alert("Gagal", "Kode voucher tidak valid atau kuota habis.");
     }
   };
 
