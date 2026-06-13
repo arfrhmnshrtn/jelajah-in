@@ -20,4 +20,4 @@ export default function MapDisplay({ latitude, longitude, name, location }: MapD
 const styles = StyleSheet.create({
   mapContainer: {},
   map: {}
-});
+})
