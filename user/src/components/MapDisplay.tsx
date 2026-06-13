@@ -22,7 +22,14 @@ export default function MapDisplay({ latitude, longitude, name, location }: MapD
           longitudeDelta: 0.05,
         }}
       >
-        <Marker coordinate={{ latitude: 0, longitude: 0 }} />
+        <Marker
+          coordinate={{ 
+            latitude: parseFloat(latitude), 
+            longitude: parseFloat(longitude) 
+          }}
+          title={name}
+          description={location}
+        />
         
       </MapView>
     </View>
