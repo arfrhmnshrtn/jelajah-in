@@ -258,7 +258,9 @@ const styles = StyleSheet.create({
   dot: { width: 8, height: 8, borderRadius: 4, marginHorizontal: 4 },
   backButton: { position: 'absolute', top: 50, left: 20, backgroundColor: 'rgba(0,0,0,0.3)', padding: 10, borderRadius: 12 },
   
-  content: { padding: 24, paddingBottom: 100 }, 
+  // BAGIAN YANG DIUBAH: paddingBottom menjadi 140
+  content: { padding: 24, paddingBottom: 140 }, 
+  
   titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 25 },
   name: { fontSize: 28, fontWeight: 'bold' },
   locationRow: { flexDirection: 'row', alignItems: 'center', marginTop: 5 },
@@ -287,5 +289,17 @@ const styles = StyleSheet.create({
   totalLabel: { fontSize: 16 },
   totalPrice: { fontSize: 22, fontWeight: 'bold', color: '#38BDF8' },
   confirmBtn: { backgroundColor: '#10B981', paddingVertical: 16, borderRadius: 16, alignItems: 'center', elevation: 2 }, 
-  confirmBtnText: { color: '#FFF', fontSize: 16, fontWeight: 'bold' }
+  confirmBtnText: { color: '#FFF', fontSize: 16, fontWeight: 'bold' },
+
+  // BAGIAN YANG DITAMBAHKAN: Style untuk Map
+  mapSection: { marginTop: 10 },
+  mapContainer: { 
+    height: 220, 
+    width: '100%', 
+    borderRadius: 16, 
+    overflow: 'hidden', 
+    borderWidth: 1, 
+    borderColor: 'rgba(150,150,150,0.2)' 
+  },
+  map: { ...StyleSheet.absoluteFillObject }
 });
