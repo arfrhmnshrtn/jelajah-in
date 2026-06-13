@@ -91,6 +91,18 @@ export default function ProfileScreen({ navigation }: any) {
           formData.append('password', editPassword);
         }
 
+        if (editPicUrl && editPicUrl.startsWith('file://')) {
+          let filename = editPicUrl.split('/').pop() || 'profile.jpg';
+          let match = /\.(\w+)$/.exec(filename);
+          let type = match ? `image/${match[1]}` : `image/jpeg`;
+
+          formData.append('avatar', {
+            uri: editPicUrl,
+            name: filename,
+            type: type,
+          } as any); 
+        }
+
       } catch (error: any) {
         console.log('Server offline:', error.message);
       }
