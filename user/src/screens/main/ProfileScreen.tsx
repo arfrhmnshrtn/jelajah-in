@@ -53,71 +53,21 @@ export default function ProfileScreen({ navigation }: any) {
       alert("Nama Lengkap dan Email wajib diisi!");
       return;
     }
-  
-
-    if (!currentUser || !currentUser.token) {
-      alert("Sesi login habis, silakan login kembali.");
-      return;
-    }
-
-    // Merakit Request Body
-    const payloadData: { name: string; email: string; password?: string } = {
-      name: editName,
-      email: editEmail,
-    };
-
-    if (editPassword.trim() !== '') {
-      if (editPassword.length < 6) {
-        alert("Password baru minimal harus 6 karakter!");
-        return;
-      }
-      payloadData.password = editPassword;
-    }
 
     try {
-      const request = await fetch('http://203.194.115.158:3000/api/auth/update', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${currentUser.token}`
-        },
-        body: JSON.stringify(payloadData)
-      });
-
-      const responseJson = await request.json();
-
-      if (request.ok) {
-        // 1. Update data yang tampil di layar saat ini (Zustand)
-        useAppStore.setState((state) => ({
-          currentUser: state.currentUser 
-            ? { 
-                ...state.currentUser, 
-                name: editName, 
-                email: editEmail,
-                profilePictureUrl: editPicUrl 
-              } 
-            : null
-        }));
-        
-        // 2. 🟢 KUNCI PERBAIKAN: Update data di dalam AsyncStorage HP agar pas direfresh tidak luntur
-        const updatedUserStorage = {
-          ...currentUser,
-          name: editName,
-          email: editEmail,
-          profilePictureUrl: editPicUrl
-        };
-        await AsyncStorage.setItem('userData', JSON.stringify(updatedUserStorage));
-
-        // Reset kolom password setelah berhasil
-        setEditPassword('');
-        setIsEditing(false);
-        alert("Profil berhasil diperbarui secara permanen! ✨");
-      } else {
-        alert(responseJson.message || "Gagal memperbarui profil di server.");
-      }
+      // 1. Update data UI secara real-time
+      useAppStore.setState((state) => ({
+        currentUser: state.currentUser 
+          ? { 
+              ...state.currentUser, 
+              name: editName, 
+              email: editEmail,
+              profilePictureUrl: editPicUrl 
+            } 
+          : null
+      }));
     } catch (error) {
-      alert("Error jaringan, gagal terhubung ke server backend.");
+      alert("Gagal memperbarui UI profil.");
     }
   };
 
