@@ -145,7 +145,7 @@ export default function BookingScreen({ route, navigation }: any) {
     );
 
     if (matchedVoucher) {
-      
+      let discountValue = subTotal * 0.3; 
     } else {
       setDiscount(0);
       setIsPromoApplied(false);
