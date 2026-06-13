@@ -1,5 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 interface MapDisplayProps {
   latitude: string;
@@ -15,3 +16,8 @@ export default function MapDisplay({ latitude, longitude, name, location }: MapD
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  mapContainer: {},
+  map: {}
+});
