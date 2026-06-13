@@ -49,14 +49,11 @@ export default function ProfileScreen({ navigation }: any) {
 
   // 🚀 FUNGSI EKSEKUSI UPDATE KE BACKEND + UPDATE STATE + UPDATE ASYNCSTORAGE 🚀
   const handleSave = async () => {
-    if (!editName) {
-      alert("Nama Lengkap wajib diisi!");
+    if (!editName || !editEmail) {
+      alert("Nama Lengkap dan Email wajib diisi!");
       return;
     }
-    if (!editEmail) {
-      alert("Email wajib diisi!");
-      return;
-    }
+  
 
     if (!currentUser || !currentUser.token) {
       alert("Sesi login habis, silakan login kembali.");
