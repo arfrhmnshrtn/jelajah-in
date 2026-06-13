@@ -5,7 +5,7 @@ import * as Location from 'expo-location';
 import { useAppStore } from '../../store/useAppStore';
 import DestinationCard from '../../components/DestinationCard';
 import CategoryChip from '../../components/CategoryChip';
-import { dummyDestinations } from '../../utils/dummyDestinations'; // Sesuaikan folder jika berbeda
+
 
 interface Destination {
   id: string;
@@ -118,7 +118,7 @@ export default function HomeScreen({ navigation }: any) {
           lat: -5.6738,
           lon: 105.2155,
           distance: "25.0 km",
-          
+          rawDist: 25.0
         },
         {
           id: "2",
@@ -132,7 +132,7 @@ export default function HomeScreen({ navigation }: any) {
           lat: -5.8741,
           lon: 105.7535,
           distance: "85.0 km",
-         
+          rawDist: 85.0
         }
       ];
 

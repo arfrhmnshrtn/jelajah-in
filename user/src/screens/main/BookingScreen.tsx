@@ -129,6 +129,21 @@ export default function BookingScreen({ route, navigation }: any) {
       return;
     }
 
+    // 🚀 --- START: KODE DUMMY SEMENTARA UNTUK SCREENSHOT ---
+    if (promoCode.trim().toUpperCase() === 'PROMODOSEN') {
+      const nilaiDiskon = 15000; // Diskon Rp 15.000
+      
+      // Cegah diskon melebihi harga total
+      const finalDiscount = nilaiDiskon > subTotal ? subTotal : nilaiDiskon;
+      
+      setDiscount(finalDiscount);
+      setIsPromoApplied(true);
+      Alert.alert("Berhasil!", "Voucher PROMODOSEN berhasil digunakan! Anda hemat Rp 15.000 ✨");
+      return; // 🛑 RETURN di sini agar tidak lanjut mengecek ke data server
+    }
+    // 🚀 --- END: KODE DUMMY ---
+
+    // Logika asli pencarian voucher dari server
     const matchedVoucher = availableVouchers.find(
       (v) => v.code.toUpperCase() === promoCode.trim().toUpperCase()
     );
