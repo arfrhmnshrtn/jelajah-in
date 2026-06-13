@@ -8,9 +8,6 @@ import { NotFoundException } from '@nestjs/common/exceptions/not-found.exception
 export class PackagesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // ========================
-  // Private Helper Methods
-  // ========================
 
   private async findPackageOrFail(id: number) {
     try {
@@ -39,9 +36,6 @@ export class PackagesService {
     }
   }
 
-  // ========================
-  // Public Methods
-  // ========================
 
   async create(createPackageDto: CreatePackageDto) {
     await this.prisma.package.create({

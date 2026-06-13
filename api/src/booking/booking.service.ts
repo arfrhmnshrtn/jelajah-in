@@ -18,9 +18,6 @@ export class BookingService {
     private readonly midtransService: MidtransService,
   ) {}
 
-  // ========================
-  // Private Helper Methods
-  // ========================
 
   private async findBookingOrFail(id: number) {
     const booking = await this.prisma.booking.findUnique({
@@ -43,16 +40,11 @@ export class BookingService {
     };
   }
 
-  // ========================
-  // Public Methods
-  // ========================
 
   async create(userId: number, createBookingDto: CreateBookingDto) {
     const { packageId, quantity, date, voucherCode } = createBookingDto;
 
-    // Gunakan Prisma transaction untuk atomic operation (Booking + Voucher Usage)
     return this.prisma.$transaction(async (tx) => {
-      // 1. Ambil data package
       const paket = await tx.package.findUnique({
         where: { id: packageId },
       });
@@ -61,13 +53,11 @@ export class BookingService {
         throw new NotFoundException('Paket tidak ditemukan');
       }
 
-      // 2. Hitung harga awal
       const originalPrice = paket.price * quantity;
       let finalPrice = originalPrice;
       let discountAmount = 0;
       let appliedVoucherId: string | null = null;
 
-      // 3. Proses voucher jika user memasukkan voucherCode
       if (voucherCode) {
         const voucher = await tx.voucher.findUnique({
           where: { code: voucherCode },
@@ -81,26 +71,21 @@ export class BookingService {
           where: { voucherId: voucher.id, userId },
         });
 
-        // Validasi ketersediaan voucher
         VoucherHelper.validateVoucherAvailability(voucher, userUsages, originalPrice);
 
-        // Hitung diskon
         discountAmount = VoucherHelper.calculateDiscount(voucher, originalPrice);
         finalPrice = Math.max(originalPrice - discountAmount, 0);
 
         appliedVoucherId = voucher.id;
 
-        // Tambah counter pemakaian voucher
         await tx.voucher.update({
           where: { id: voucher.id },
           data: { usedCount: { increment: 1 } },
         });
       }
 
-      // 4. Generate booking code
       const bookingCode = `TRX-${nanoid(4).toUpperCase()}`;
 
-      // 5. Simpan booking ke database dengan harga final
       const booking = await tx.booking.create({
         data: {
           bookingCode,
@@ -113,7 +98,6 @@ export class BookingService {
         },
       });
 
-      // 6. Jika pakai voucher, simpan riwayat penggunaan (VoucherUsage)
       if (appliedVoucherId) {
         await tx.voucherUsage.create({
           data: {
@@ -124,7 +108,6 @@ export class BookingService {
         });
       }
 
-      // 7. Panggil Midtrans dengan finalPrice
       const transaction: { token: string; redirect_url: string } =
         await this.midtransService.createTransaction(
           `ORDER-${booking.id}`,

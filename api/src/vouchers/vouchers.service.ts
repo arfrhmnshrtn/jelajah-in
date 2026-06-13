@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
+import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { VoucherHelper } from './helpers/voucher.helper';
 import { Prisma } from '../generated/prisma/client.js';
 
@@ -22,7 +23,6 @@ export class VouchersService {
     const { code, discountValue, maxDiscount, minPurchase, ...rest } =
       createVoucherDto;
 
-    // Check if code is unique
     const existingVoucher = await this.prisma.voucher.findUnique({
       where: { code },
     });
@@ -60,19 +60,14 @@ export class VouchersService {
       where: {
         isActive: true,
         startDate: {
-          lte: now, // startDate sudah dimulai
+          lte: now,
         },
         endDate: {
-          gte: now, // belum expired
+          gte: now,
         },
-        // kuota masih tersedia (quota > usedCount)
-        // Since Prisma doesn't support comparing columns directly in where easily without raw query or special preview features,
-        // we can filter them after fetching, or using a raw query.
-        // It's safer to fetch and filter, or we use a basic filter and then array filter.
       },
     });
 
-    // Filter valid quota
     const availableVouchers = vouchers.filter((v) => v.quota > v.usedCount);
 
     return {
@@ -99,13 +94,89 @@ export class VouchersService {
     };
   }
 
+  async deleteVoucher(id: string) {
+    const voucher = await this.prisma.voucher.findUnique({
+      where: { id },
+    });
+
+    if (!voucher) {
+      throw new NotFoundException('Voucher tidak ditemukan');
+    }
+
+    if (voucher.usedCount > 0) {
+      throw new BadRequestException('Voucher tidak dapat dihapus karena sudah di gunakan!!');
+    }
+
+    await this.prisma.voucher.delete({
+      where: { id },
+    });
+
+    return {
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Voucher berhasil dihapus',
+    };
+  }
+
+  /**
+   * 4. Admin Update Voucher
+   */
+  async updateVoucher(id: string, updateVoucherDto: UpdateVoucherDto) {
+    const voucher = await this.prisma.voucher.findUnique({
+      where: { id },
+    });
+
+    if (!voucher) {
+      throw new NotFoundException('Voucher tidak ditemukan');
+    }
+
+    const { code, discountValue, maxDiscount, minPurchase, ...rest } =
+      updateVoucherDto;
+
+    // If code is being changed, check for conflicts
+    if (code && code !== voucher.code) {
+      const existingVoucher = await this.prisma.voucher.findUnique({
+        where: { code },
+      });
+
+      if (existingVoucher) {
+        throw new ConflictException(
+          'Voucher code sudah digunakan oleh voucher lain',
+        );
+      }
+    }
+
+    const updatedVoucher = await this.prisma.voucher.update({
+      where: { id },
+      data: {
+        ...(code !== undefined && { code }),
+        ...(discountValue !== undefined && {
+          discountValue: new Prisma.Decimal(discountValue),
+        }),
+        ...(maxDiscount !== undefined && {
+          maxDiscount: new Prisma.Decimal(maxDiscount),
+        }),
+        ...(minPurchase !== undefined && {
+          minPurchase: new Prisma.Decimal(minPurchase),
+        }),
+        ...rest,
+      },
+    });
+
+    return {
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Voucher berhasil diperbarui',
+      data: updatedVoucher,
+    };
+  }
+
   /**
    * 3. Get Available Voucher for Logged In User
    */
   async getAvailableVouchersForUser(userId: number) {
     const now = new Date();
 
-    // Fetch active vouchers, unexpired, started
     const vouchers = await this.prisma.voucher.findMany({
       where: {
         isActive: true,
@@ -113,7 +184,6 @@ export class VouchersService {
         endDate: { gte: now },
       },
       include: {
-        // Hanya ambil riwayat penggunaan untuk user yang sedang login
         voucherUsages: {
           where: { userId },
           select: { id: true },
@@ -121,13 +191,10 @@ export class VouchersService {
       },
     });
 
-    // 1. Filter kuota masih tersedia secara global
-    // 2. Filter pemakaian user (voucherUsages.length) belum mencapai limit (userLimit)
     const availableVouchers = vouchers
       .filter((v) => v.quota > v.usedCount)
       .filter((v) => v.voucherUsages.length < v.userLimit)
       .map((v) => {
-        // Hilangkan property voucherUsages agar response lebih clean
         const { voucherUsages, ...rest } = v;
         return rest;
       });
