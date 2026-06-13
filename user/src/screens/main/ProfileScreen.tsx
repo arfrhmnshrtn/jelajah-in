@@ -61,6 +61,12 @@ export default function ProfileScreen({ navigation }: any) {
       email: editEmail,
       profilePictureUrl: editPicUrl
     };
+
+    try {
+      useAppStore.setState({ currentUser: updatedUserStorage as any });
+    } catch (err) {
+      console.log("Gagal memperbarui UI lokal:", err);
+    }
   };
 
   // Fungsi eksekusi saat tombol keluar ditekan di Pop-up
