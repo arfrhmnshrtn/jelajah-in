@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, UseGuards, Req } from '@nestjs/common';
 import { VouchersService } from './vouchers.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
@@ -30,6 +30,13 @@ export class VouchersController {
   @Get('all')
   getAllVouchers() {
     return this.vouchersService.getAllVouchers();
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Delete(':id')
+  deleteVoucher(@Param('id') id: string) {
+    return this.vouchersService.deleteVoucher(id);
   }
 
   @UseGuards(JwtAuthGuard)

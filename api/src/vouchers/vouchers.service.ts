@@ -93,6 +93,30 @@ export class VouchersService {
     };
   }
 
+  async deleteVoucher(id: string) {
+    const voucher = await this.prisma.voucher.findUnique({
+      where: { id },
+    });
+
+    if (!voucher) {
+      throw new NotFoundException('Voucher tidak ditemukan');
+    }
+
+    if (voucher.usedCount > 0) {
+      throw new BadRequestException('Voucher tidak dapat dihapus karena sudah di gunakan!!');
+    }
+
+    await this.prisma.voucher.delete({
+      where: { id },
+    });
+
+    return {
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Voucher berhasil dihapus',
+    };
+  }
+
   /**
    * 3. Get Available Voucher for Logged In User
    */
