@@ -17,6 +17,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../../store/useAppStore';
 //import MapView, { Marker } from 'react-native-maps';
+import MapDisplay from '../../components/MapDisplay';
 
 
 const { width } = Dimensions.get('window');
