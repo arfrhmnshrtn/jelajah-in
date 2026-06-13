@@ -153,6 +153,10 @@ export default function BookingScreen({ route, navigation }: any) {
       }
 
       if (discountValue > subTotal) discountValue = subTotal;
+
+      setDiscount(discountValue);
+      setIsPromoApplied(true);
+      Alert.alert("Berhasil!", `Kode voucher ${matchedVoucher.code.toUpperCase()} berhasil terpasang.`);
     } else {
       setDiscount(0);
       setIsPromoApplied(false);
