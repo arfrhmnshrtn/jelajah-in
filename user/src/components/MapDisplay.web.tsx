@@ -20,6 +20,12 @@ export default function MapDisplay({ name }: MapDisplayProps) {
 }
 
 const styles = StyleSheet.create({
-  mapContainer: {},
+  mapContainer: { 
+    height: 200, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: '#F1F5F9', 
+    marginTop: 10,
+  },
   textWarning: {}
 });
