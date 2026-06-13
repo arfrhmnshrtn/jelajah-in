@@ -163,7 +163,12 @@ export default function DetailScreen({ route, navigation }: any) {
                   longitudeDelta: 0.05,
                 }}
               >
-                <Marker coordinate={{ latitude: 0, longitude: 0 }} />
+                <Marker
+                  coordinate={{ 
+                    latitude: parseFloat(item.latitude), 
+                    longitude: parseFloat(item.longitude) 
+                  }}
+                />
               </MapView>
             </View>
           </View>
