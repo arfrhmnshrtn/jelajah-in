@@ -54,6 +54,13 @@ export default function ProfileScreen({ navigation }: any) {
       alert("Nama Lengkap dan Email wajib diisi!");
       return;
     }
+
+    const updatedUserStorage = {
+      ...currentUser,
+      name: editName,
+      email: editEmail,
+      profilePictureUrl: editPicUrl
+    };
   };
 
   // Fungsi eksekusi saat tombol keluar ditekan di Pop-up
