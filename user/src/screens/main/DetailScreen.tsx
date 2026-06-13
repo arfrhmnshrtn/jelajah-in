@@ -168,6 +168,8 @@ export default function DetailScreen({ route, navigation }: any) {
                     latitude: parseFloat(item.latitude), 
                     longitude: parseFloat(item.longitude) 
                   }}
+                  title={item.name}
+                  description={item.location}
                 />
               </MapView>
             </View>
