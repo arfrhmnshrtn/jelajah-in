@@ -128,6 +128,17 @@ export default function BookingScreen({ route, navigation }: any) {
       Alert.alert("Perhatian", "Silakan masukkan kode voucher terlebih dahulu.");
       return;
     }
+
+    // 🚀 --- START: KODE DUMMY SEMENTARA UNTUK SCREENSHOT ---
+    if (promoCode.trim().toUpperCase() === 'PROMODOSEN') {
+      const nilaiDiskon = 15000; 
+      const finalDiscount = nilaiDiskon > subTotal ? subTotal : nilaiDiskon;
+      setDiscount(finalDiscount);
+      setIsPromoApplied(true);
+      Alert.alert("Berhasil!", "Voucher PROMODOSEN berhasil digunakan! Anda hemat Rp 15.000 ✨");
+      return; 
+    }
+    // 🚀 --- END: KODE DUMMY ---
   };
 
   const handlePayment = async () => {
