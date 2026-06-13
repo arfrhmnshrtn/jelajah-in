@@ -3,15 +3,8 @@ import { Menu, Bell, Sun, Moon, Package, User, CreditCard, LogOut, Settings, Che
 import { useNavigate } from 'react-router-dom';
 
 const Header = ({ toggleSidebar, theme, toggleTheme, userProfile, onLogout, t }) => {
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const navigate = useNavigate();
-
-  const notifications = [
-    { id: 1, type: 'booking', text: 'Pemesanan baru dari Andi Pratama', time: '2 menit yang lalu', icon: <CreditCard size={14} />, color: '#6366f1' },
-    { id: 2, type: 'user', text: 'Siti Aminah baru saja mendaftar', time: '1 jam yang lalu', icon: <User size={14} />, color: '#10b981' },
-    { id: 3, type: 'package', text: 'Paket Raja Ampat telah diperbarui', time: '5 jam yang lalu', icon: <Package size={14} />, color: '#f59e0b' },
-  ];
 
   const nama = localStorage.getItem('nama');
   // const role = localStorage.getItem('role');
@@ -29,87 +22,12 @@ const Header = ({ toggleSidebar, theme, toggleTheme, userProfile, onLogout, t })
           {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
         </button>
         
-        <div style={{ position: 'relative' }}>
-          <button 
-            className="icon-button" 
-            onClick={() => {
-              setShowNotifications(!showNotifications);
-              setShowProfileMenu(false);
-            }}
-            style={{ position: 'relative' }}
-          >
-            <Bell size={20} />
-            <div className="icon-badge"></div>
-          </button>
 
-          {showNotifications && (
-            <div style={{ 
-              position: 'absolute', 
-              top: '120%', 
-              right: 0, 
-              width: '320px', 
-              background: 'var(--card-bg)', 
-              borderRadius: '16px', 
-              boxShadow: 'var(--card-shadow)', 
-              border: '1px solid var(--border-color)',
-              zIndex: 1000,
-              overflow: 'hidden',
-              animation: 'slideDown 0.3s ease'
-            }}>
-              <div style={{ padding: '16px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 700, fontSize: '15px' }}>Notifikasi</span>
-                <span style={{ fontSize: '12px', color: 'var(--primary)', cursor: 'pointer' }}>Tandai sudah dibaca</span>
-              </div>
-              <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
-                {notifications.map(n => (
-                  <div key={n.id} style={{ 
-                    padding: '12px 16px', 
-                    borderBottom: '1px solid var(--border-color)', 
-                    display: 'flex', 
-                    gap: '12px', 
-                    cursor: 'pointer',
-                    transition: 'background 0.2s'
-                  }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-secondary)'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
-                    <div style={{ 
-                      width: '32px', 
-                      height: '32px', 
-                      borderRadius: '10px', 
-                      background: `${n.color}20`, 
-                      color: n.color,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0
-                    }}>
-                      {n.icon}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '13px', fontWeight: 500, lineHeight: '1.4', marginBottom: '4px' }}>{n.text}</div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{n.time}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div style={{ padding: '12px', textAlign: 'center', background: 'var(--bg-secondary)' }}>
-                <span 
-                  style={{ fontSize: '13px', color: 'var(--text-secondary)', cursor: 'pointer', fontWeight: 500 }}
-                  onClick={() => {
-                    setShowNotifications(false);
-                    navigate('/notifications');
-                  }}
-                >
-                  Lihat semua notifikasi
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
         
         <div style={{ position: 'relative' }}>
           <div 
             onClick={() => {
               setShowProfileMenu(!showProfileMenu);
-              setShowNotifications(false);
             }}
             style={{ 
               display: 'flex', 
