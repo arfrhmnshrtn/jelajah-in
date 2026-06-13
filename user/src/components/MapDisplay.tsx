@@ -37,6 +37,6 @@ export default function MapDisplay({ latitude, longitude, name, location }: MapD
 }
 
 const styles = StyleSheet.create({
-  mapContainer: {},
-  map: {}
+  mapContainer: { height: 200, borderRadius: 16, overflow: 'hidden', marginTop: 10 },
+  map: { width: '100%', height: '100%' }
 });
