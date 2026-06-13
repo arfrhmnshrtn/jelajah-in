@@ -64,8 +64,9 @@ export default function ProfileScreen({ navigation }: any) {
 
     try {
       useAppStore.setState({ currentUser: updatedUserStorage as any });
+      await AsyncStorage.setItem('userData', JSON.stringify(updatedUserStorage));
     } catch (err) {
-      console.log("Gagal memperbarui UI lokal:", err);
+      console.log("Gagal menyimpan ke memori lokal:", err);
     }
   };
 
