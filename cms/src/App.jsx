@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { LogOut } from 'lucide-react';
+import ConfirmModal from './components/shared/ConfirmModal';
 import Sidebar from './components/sidebar/Sidebar';
 import Header from './components/header/Header';
 import Dashboard from './components/dashboard/Dashboard';
@@ -17,10 +19,16 @@ import Login from './components/login/Login';
 import { AppProvider, useAppContext } from './context/AppContext';
 
 function AppContent() {
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
   const { 
     isAuthenticated, isSidebarCollapsed, theme, userProfile, handleLogout, t, 
     toggleSidebar, toggleTheme, handleLogin 
   } = useAppContext();
+
+  const confirmLogout = () => {
+    setShowLogoutConfirm(true);
+  };
 
   return (
     <Router>
@@ -32,14 +40,14 @@ function AppContent() {
           </Routes>
         ) : (
           <>
-            <Sidebar isCollapsed={isSidebarCollapsed} onLogout={handleLogout} t={t} />
+            <Sidebar isCollapsed={isSidebarCollapsed} onLogout={confirmLogout} t={t} />
             <div className="main-content">
               <Header 
                 toggleSidebar={toggleSidebar} 
                 theme={theme} 
                 toggleTheme={toggleTheme} 
                 userProfile={userProfile} 
-                onLogout={handleLogout}
+                onLogout={confirmLogout}
                 t={t}
               />
               <Routes>
@@ -57,6 +65,20 @@ function AppContent() {
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>
+            <ConfirmModal
+              isOpen={showLogoutConfirm}
+              onClose={() => setShowLogoutConfirm(false)}
+              onConfirm={() => {
+                setShowLogoutConfirm(false);
+                handleLogout();
+              }}
+              title="Konfirmasi Keluar"
+              message="Apakah Anda yakin ingin keluar dari akun ini?"
+              confirmText="Ya, Keluar"
+              cancelText="Batal"
+              icon={LogOut}
+              color="var(--danger)"
+            />
           </>
         )}
       </div>

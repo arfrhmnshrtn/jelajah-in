@@ -2,8 +2,8 @@
 
 :root {
   /* Common Colors */
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
@@ -71,6 +71,25 @@ body {
   min-height: 100vh;
 }
 
+.page-content,
+.dashboard {
+  padding: 32px;
+  animation: pageIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
 .main-content {
   flex-grow: 1;
   display: flex;
@@ -78,6 +97,7 @@ body {
   overflow-x: hidden;
   transition: all 0.3s ease;
   background-color: var(--bg-home);
+  min-width: 0; /* Mencegah overflow merusak flexbox */
 }
 
 /* Sidebar */
@@ -93,6 +113,7 @@ body {
   top: 0;
   overflow-y: auto;
   z-index: 1000;
+  flex-shrink: 0; /* Mengunci lebar agar tidak menyusut di layar apa pun */
 }
 
 .sidebar.collapsed {
@@ -333,6 +354,14 @@ body {
 .stat-icon.indigo { background-color: rgba(79, 70, 229, 0.1); color: #4f46e5; }
 
 /* Tables */
+.table-row-hover {
+  transition: all 0.2s ease;
+}
+
+.table-row-hover:hover {
+  background-color: rgba(99, 102, 241, 0.02);
+}
+
 .table-responsive {
   width: 100%;
   overflow-x: auto;
@@ -384,50 +413,26 @@ tr:last-child td {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 12px 28px;
   border-radius: 12px;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: none;
+  transition: all 0.2s ease;
+  border: none !important;
+  box-shadow: none !important;
   position: relative;
-  overflow: hidden;
-}
-
-.btn:active {
-  transform: scale(0.96);
-}
-
-.btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
-  transition: 0.5s;
-}
-
-.btn:hover::after {
-  left: 100%;
+  outline: none !important;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  background-color: #3b82f6;
   color: white;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+  background-color: #2563eb;
+  transform: translateY(-1px);
 }
 
 .btn-success {
@@ -557,8 +562,10 @@ tr:last-child td {
   background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  overflow-y: auto;
+  padding: 20px;
   z-index: 2000;
 }
 
@@ -568,6 +575,8 @@ tr:last-child td {
   padding: 24px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   border: 1px solid var(--border-color);
+  margin: auto;
+  position: relative;
 }
 
 .modal-header {
@@ -586,64 +595,630 @@ tr:last-child td {
   .printable-report { border: none !important; box-shadow: none !important; }
 }
 
-/* Login Page Styling */
+/* Login Page Styling - Ultra Clean Minimalist Theme */
 .login-container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg-home);
-  background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
-                    radial-gradient(at 50% 0%, rgba(129, 140, 248, 0.05) 0px, transparent 50%);
+  width: 100%;
+  min-height: 100vh;
+  display: flex;         /* Mengaktifkan sistem Flexbox */
+  align-items: center;     /* Meratakan objek tepat di tengah secara vertikal */
+  justify-content: center; /* Meratakan objek tepat di tengah secara horizontal */
+  padding: 20px;
+  background-color: #f4f6f9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-sizing: border-box;
 }
 
 .login-card {
-  background: var(--card-bg);
-  width: 420px;
-  padding: 48px 40px;
-  border-radius: 24px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.login-card-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.login-logo-box {
-  width: 56px;
-  height: 56px;
-  background: var(--primary);
-  color: white;
-  border-radius: 16px;
+  width: 100%;
+  max-width: 440px; /* Diperkecil agar lebih proporsional di tengah */
+  background: #ffffff;
+  padding: 32px 36px; /* Padding disesuaikan agar lebih padat */
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 20px;
-  box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+  flex-direction: column; /* Posisi logo tetap di atas, form di bawah */
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  box-sizing: border-box;
 }
 
-.login-card-header h1 {
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 8px;
+/* Logo Styling inside Login Card */
+.login-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px; /* Dikurangi agar kartu lebih ringkas */
+  width: 100%;
+}
+
+.login-logo-img {
+  max-width: 120px; /* Logo diperkecil agar serasi */
+  height: auto;
+  object-fit: contain;
+}
+
+/* Responsif untuk Layar Kecil (Mobile) */
+@media (max-width: 560px) {
+  .login-card {
+    max-width: 100%;
+    padding: 32px 24px;
+  }
+}
+
+/* Success Card Styling inside Login Card */
+.login-card.success {
+  align-items: center;
+  text-align: center;
+}
+
+.success-icon-wrapper {
+  color: var(--success, #10b981);
+  margin-bottom: 16px;
+}
+
+/* Judul Utama "Log in" */
+.portal-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 24px;
+  text-align: left;
   letter-spacing: -0.5px;
 }
 
-.login-card-header p {
-  color: var(--text-secondary);
-  font-size: 14px;
+.portal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Jarak antar input field */
+  width: 100%;
 }
 
-.form-group {
+.portal-input-group {
+  width: 100%;
+  position: relative;
+}
+
+/* Input Field Style */
+.portal-input {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  color: #333333;
+  background-color: #ffffff;
+  border: 1px solid #cccccc; /* Border default abu-abu */
+  border-radius: 6px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Ketika Input Aktif / Fokus (Efek border biru/cyan tipis seperti gambar) */
+.portal-input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px #38bdf8;
+}
+
+/* Placeholder text style */
+.portal-input::placeholder {
+  color: #a0aec0;
+}
+
+/* Tombol Log In Cyan */
+.portal-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #0ea5e9; /* Warna biru cyan cerah sesuai contoh */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.portal-btn:hover {
+  background-color: #0284c7; /* Sedikit menggelap saat di-hover */
+}
+
+.portal-btn:disabled {
+  background-color: #bae6fd;
+  cursor: not-allowed;
+}
+
+/* Bagian Bawah: Tautan "or, sign up" */
+.portal-form-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  font-size: 15px;
+  color: #718096;
+}
+
+.portal-forgot-link {
+  color: #718096;
+  text-decoration: underline;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.portal-forgot-link:hover {
+  color: #4a5568;
+}
+.portal-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-align: center; /* Judul rata tengah */
+}
+
+.portal-form {
+  width: 100%;
+}
+
+.portal-input-group {
+  position: relative;
   margin-bottom: 20px;
 }
 
-.form-group label {
+.portal-input {
+  width: 100%;
+  padding: 12px 44px 12px 44px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  color: #1e293b;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.portal-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.portal-input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  transition: all 0.2s ease;
+}
+
+.portal-input:focus + .portal-input-icon {
+  color: #3b82f6;
+}
+
+.portal-eye-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Hide default browser reveal and clear buttons in password/input fields */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+.portal-form-footer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.portal-forgot-link {
+  display: block;
+  text-align: right;
+  font-size: 13px;
+  color: #64748b;
+  text-decoration: none;
+  margin-top: 8px;
+}
+
+.portal-forgot-link:hover {
+  color: #3b82f6;
+}
+
+.portal-btn {
+  width: 100%;
+  padding: 14px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  margin-top: 24px;
+  transition: all 0.2s ease;
+}
+
+.portal-btn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.portal-footer {
+  margin-top: 32px;
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Settings Page Styles */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.settings-card {
+  background-color: var(--card-bg);
+  border-radius: 20px;
+  padding: 32px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-img-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+}
+
+.profile-img-container img {
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
+  object-fit: cover;
+  border: 4px solid var(--card-bg);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.camera-overlay {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 36px;
+  height: 36px;
+  background-color: var(--primary);
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 3px solid var(--card-bg);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+.camera-overlay:hover {
+  transform: scale(1.1);
+  background-color: var(--primary-hover);
+}
+
+.settings-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+}
+
+.settings-nav-item:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.settings-nav-item.active {
+  background-color: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Input with Icons */
+.input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-icon .input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.input-with-icon input,
+.input-with-icon select {
+  width: 100%;
+  padding: 12px 16px 12px 48px;
+  background-color: var(--input-bg);
+  border: 1.5px solid var(--border-color);
+  border-radius: 14px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input-with-icon input:focus,
+.input-with-icon select:focus {
+  border-color: var(--primary);
+  background-color: var(--card-bg);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.input-with-icon input:focus + .input-icon {
+  color: var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 440px) {
+  .login-card {
+    padding: 32px 24px;
+    box-shadow: none;
+    border: none;
+  }
+}
+
+/* Delete Modal Styles */
+.delete-modal-content {
+  background-color: #374151; /* Slate-700 */
+  border-radius: 12px;
+  padding: 40px;
+  width: 90%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: modalScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  margin: auto;
+}
+
+@keyframes modalScaleUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.delete-modal-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  border: 4px solid #9ca3af;
+  border-radius: 50%;
+  margin-bottom: 24px;
+}
+
+.delete-modal-title {
+  color: #d1d5db;
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 32px;
+  line-height: 1.4;
+}
+
+.delete-modal-subtitle {
+  color: #9ca3af;
+  font-size: 14px;
+  margin-top: -24px;
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+.delete-modal-actions {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  justify-content: center;
+}
+
+.delete-btn-confirm {
+  background-color: #ef4444; /* red-500 */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-btn-confirm:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+}
+
+.delete-btn-cancel {
+  background-color: #1f2937; /* Gray-800 */
+  color: #9ca3af;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-btn-cancel:hover {
+  background-color: #111827;
+  color: white;
+}
+
+.delete-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.delete-modal-close:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.feedback-modal {
+  padding: 48px 32px;
+  max-width: 400px;
+}
+
+.feedback-modal .delete-modal-icon {
+  border: none;
+  width: auto;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.feedback-modal .delete-modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+}
+
+/* Premium Modal Design */
+.premium-modal {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.modal-header-premium {
+  padding: 24px 32px;
+  background: linear-gradient(to right, rgba(99, 102, 241, 0.05), transparent);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+}
+
+.header-icon-circle {
+  width: 48px;
+  height: 48px;
+  background-color: rgba(99, 102, 241, 0.1);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-header-premium h2 {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.modal-header-premium p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 2px 0 0 0;
+}
+
+.close-btn-premium {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.close-btn-premium:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.modal-body-premium {
+  padding: 32px;
+}
+
+.form-section {
+  margin-bottom: 28px;
+}
+
+.form-section:last-child {
+  margin-bottom: 0;
+}
+
+.premium-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.premium-input-group {
+  margin-bottom: 20px;
+}
+
+.premium-input-group label {
   display: block;
   font-size: 13px;
   font-weight: 600;
@@ -651,141 +1226,353 @@ tr:last-child td {
   margin-bottom: 8px;
 }
 
-.label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.forgot-link {
-  font-size: 12px;
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.input-with-icon {
+.input-with-icon-premium {
   position: relative;
-  display: flex;
-  align-items: center;
+  width: 100%;
 }
 
-.input-icon {
+.input-icon-p {
   position: absolute;
-  left: 14px;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--text-secondary);
   pointer-events: none;
 }
 
-.input-with-icon input {
+.input-with-icon-premium input,
+.input-with-icon-premium select {
   width: 100%;
-  padding: 12px 14px 12px 42px;
-  background: var(--input-bg);
-  border: 1px solid var(--border-color);
+  padding: 12px 16px 12px 48px;
+  background-color: var(--input-bg);
+  border: 1.5px solid var(--border-color);
   border-radius: 12px;
   color: var(--text-primary);
   font-size: 14px;
+  font-weight: 500;
+  outline: none;
   transition: all 0.2s ease;
 }
 
-.input-with-icon input:focus {
-  outline: none;
+.input-with-icon-premium input:focus,
+.input-with-icon-premium select:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-  background: white;
 }
 
-.dark .input-with-icon input:focus {
-  background: #0f172a;
+.modal-footer-premium {
+  padding: 24px 32px;
+  background-color: var(--input-bg);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
-.login-options {
-  margin-bottom: 24px;
+.btn-cancel-p {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.remember-me {
+.btn-cancel-p:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.btn-save-p {
+  padding: 10px 24px;
+  background-color: var(--primary);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
-.remember-me input {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
-  cursor: pointer;
+.btn-save-p:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
 }
 
-.login-btn {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: white;
-  border: none;
-  border-radius: 14px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-bottom: 24px;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+/* ========================================================================== */
+/* LIGHT MODE - ANTIGRAVITY PREMIUM PACKAGE DETAIL CARD UPGRADES (JELAJAH.IN)  */
+/* ========================================================================== */
+
+/* 1. Left Card: Package Image & Spec Card */
+body:not(.dark) .package-image-card {
+  --card-bg: #3b82f6 !important;
+  --border-color: rgba(255, 255, 255, 0.25) !important;
+  
+  background-color: var(--card-bg) !important;
+  background-image: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; /* Electric Cobalt Volumetric Gradient */
+  border: 1px solid var(--border-color) !important;
+  border-top-color: rgba(255, 255, 255, 0.4) !important; /* Inner top glow highlight */
+  
+  /* Premium 3D Raised Pop-Up effect */
+  box-shadow: 0 30px 60px -15px rgba(29, 78, 216, 0.3), 
+              0 0 0 1px rgba(29, 78, 216, 0.05) !important;
+  transform: translateY(-6px) !important; /* Elegant default elevation */
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.login-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+body:not(.dark) .package-image-card:hover {
+  transform: translateY(-10px) !important; /* Dynamic hover pop */
+  box-shadow: 0 40px 80px -20px rgba(29, 78, 216, 0.45), 
+              0 0 0 1px rgba(29, 78, 216, 0.1) !important;
 }
 
-.login-btn:active {
-  transform: scale(0.98);
+/* 2. Glassmorphic Spec Floating Tiles (Lokasi & Harga) */
+body:not(.dark) .package-spec-item {
+  background-color: rgba(255, 255, 255, 0.88) !important; /* Frosted Glass */
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 10px 25px -8px rgba(15, 23, 42, 0.08) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.login-footer {
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-secondary);
+body:not(.dark) .package-spec-item:hover {
+  transform: scale(1.04) translateY(-1px) !important; /* Micro scale interactive pop */
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 15px 30px -10px rgba(15, 23, 42, 0.15) !important;
 }
 
-.login-footer a {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 700;
-  margin-left: 4px;
+/* 3. Right Card: Package Description Card */
+body:not(.dark) .package-desc-card {
+  --card-bg: #3b82f6 !important;
+  --border-color: rgba(255, 255, 255, 0.25) !important;
+  
+  background-color: var(--card-bg) !important;
+  background-image: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; /* Matches the left card exactly */
+  border: 1px solid var(--border-color) !important;
+  border-top-color: rgba(255, 255, 255, 0.4) !important; /* Glow outline */
+  
+  /* Raised Elevation */
+  box-shadow: 0 30px 60px -15px rgba(29, 78, 216, 0.3), 
+              0 0 0 1px rgba(29, 78, 216, 0.05) !important;
+  transform: translateY(-6px) !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.login-card.success {
-  text-align: center;
+body:not(.dark) .package-desc-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 35px 70px -18px rgba(29, 78, 216, 0.4) !important;
 }
 
-.success-icon-wrapper {
-  width: 80px;
-  height: 80px;
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 24px;
+body:not(.dark) .package-desc-title {
+  color: #ffffff !important;
+  border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+  text-shadow: 0 2px 4px rgba(15, 23, 42, 0.15) !important;
 }
 
-.login-card.success h2 {
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 12px;
+body:not(.dark) .package-desc-text {
+  color: #f0f7ff !important; /* Crisp readability */
+  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.1) !important;
+  font-weight: 500 !important;
 }
 
-.login-card.success p {
-  color: var(--text-secondary);
-  margin-bottom: 32px;
-  line-height: 1.6;
+body:not(.dark) .package-desc-actions {
+  border-top-color: rgba(255, 255, 255, 0.2) !important;
 }
+
+/* Glassmorphic Secondary Button inside blue card */
+body:not(.dark) .package-desc-card .btn-secondary {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  transition: all 0.2s ease !important;
+}
+
+body:not(.dark) .package-desc-card .btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* 4. Trust Banner: Guarantee / Protection Card (Emerald Safe Green Theme) */
+body:not(.dark) .package-guarantee-card {
+  background-image: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%) !important; /* Very soft emerald glass */
+  border: 1px solid #bbf7d0 !important; /* Success Green border outline */
+  box-shadow: 0 15px 35px -10px rgba(16, 185, 129, 0.15) !important;
+  transform: translateY(0) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body:not(.dark) .package-guarantee-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 20px 45px -8px rgba(16, 185, 129, 0.22) !important;
+}
+
+body:not(.dark) .package-guarantee-card h4 {
+  color: #065f46 !important; /* Trusted Dark Green */
+  font-weight: 800 !important;
+}
+
+body:not(.dark) .package-guarantee-card p {
+  color: #047857 !important; /* Clear readable Green */
+}
+
+body:not(.dark) .package-guarantee-card svg {
+  color: #10b981 !important; /* Emerald success check */
+}
+
+body:not(.dark) .package-guarantee-card > div:first-child {
+  background-color: rgba(16, 185, 129, 0.12) !important; /* Soft green badge container */
+}
+
+/* ========================================================== */
+/* LIGHT MODE - CLEAN LIGHT MODAL WITH VIBRANT COBALT ACCENTS */
+/* ========================================================== */
+body:not(.dark) .package-form-modal,
+body:not(.dark) .booking-detail-modal {
+  --card-bg: #ffffff !important;
+  --text-primary: #0f172a !important; /* Elegant Slate 900 */
+  --text-secondary: #475569 !important; /* Slate 600 */
+  --border-color: #e2e8f0 !important; /* Soft gray border */
+  
+  background-color: var(--card-bg) !important;
+  background-image: none !important; /* Remove heavy blue background */
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  
+  /* Sleek top royal-blue accent bar */
+  border-top: 6px solid #3b82f6 !important; 
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.16) !important;
+}
+
+/* Modal Headers */
+body:not(.dark) .package-form-modal .modal-header,
+body:not(.dark) .booking-detail-modal .modal-header {
+  border-bottom: 1px solid var(--border-color) !important;
+  background-color: #f8fafc !important; /* Premium light header bg */
+  padding: 20px 24px !important;
+}
+
+body:not(.dark) .package-form-modal .modal-header span,
+body:not(.dark) .package-form-modal .modal-header h2,
+body:not(.dark) .booking-detail-modal .modal-header span,
+body:not(.dark) .booking-detail-modal .modal-header h2 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+
+body:not(.dark) .package-form-modal .modal-header .icon-button,
+body:not(.dark) .booking-detail-modal .modal-header .icon-button {
+  color: #64748b !important;
+  background-color: transparent !important;
+  transition: all 0.2s ease !important;
+}
+
+body:not(.dark) .package-form-modal .modal-header .icon-button:hover,
+body:not(.dark) .booking-detail-modal .modal-header .icon-button:hover {
+  background-color: #e2e8f0 !important;
+  color: #3b82f6 !important;
+}
+
+/* Form Controls & Labels */
+body:not(.dark) .package-form-modal label,
+body:not(.dark) .booking-detail-modal label {
+  color: #334155 !important; /* Clean dark-slate label */
+  text-shadow: none !important;
+  font-weight: 600 !important;
+}
+
+body:not(.dark) .package-form-modal input:not(.btn),
+body:not(.dark) .package-form-modal textarea,
+body:not(.dark) .package-form-modal select,
+body:not(.dark) .booking-detail-modal input:not(.btn),
+body:not(.dark) .booking-detail-modal textarea,
+body:not(.dark) .booking-detail-modal select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #cbd5e1 !important; /* Soft slate outline */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body:not(.dark) .package-form-modal input:not(.btn)::placeholder,
+body:not(.dark) .package-form-modal textarea::placeholder,
+body:not(.dark) .booking-detail-modal input:not(.btn)::placeholder,
+body:not(.dark) .booking-detail-modal textarea::placeholder {
+  color: #94a3b8 !important; /* Soft gray placeholder text */
+}
+
+/* Input Focus glows in beautiful signature blue! */
+body:not(.dark) .package-form-modal input:not(.btn):focus,
+body:not(.dark) .package-form-modal textarea:focus,
+body:not(.dark) .package-form-modal select:focus,
+body:not(.dark) .booking-detail-modal input:not(.btn):focus,
+body:not(.dark) .booking-detail-modal textarea:focus,
+body:not(.dark) .booking-detail-modal select:focus {
+  border-color: #3b82f6 !important; /* Lights up with signature blue */
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important; /* Soft sky-blue glow */
+  outline: none !important;
+}
+
+/* Modal Actions Footer & Buttons */
+body:not(.dark) .package-form-modal .modal-actions,
+body:not(.dark) .booking-detail-modal .modal-actions {
+  border-top: 1px solid var(--border-color) !important;
+  background-color: #f8fafc !important; /* Match header bar background */
+  padding: 20px 24px !important;
+}
+
+/* Cancel Button */
+body:not(.dark) .package-form-modal .btn-secondary,
+body:not(.dark) .booking-detail-modal .btn-secondary {
+  background-color: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  color: #475569 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: all 0.2s ease !important;
+}
+
+body:not(.dark) .package-form-modal .btn-secondary:hover,
+body:not(.dark) .booking-detail-modal .btn-secondary:hover {
+  background-color: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Save Button (Vibrant Blue primary gradient) */
+body:not(.dark) .package-form-modal .btn-primary,
+body:not(.dark) .booking-detail-modal .btn-primary {
+  background-color: #3b82f6 !important;
+  background-image: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important; /* Signature blue */
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border: none !important;
+  box-shadow: 0 8px 20px -5px rgba(59, 130, 246, 0.35) !important;
+  transition: all 0.25s ease !important;
+}
+
+body:not(.dark) .package-form-modal .btn-primary:hover,
+body:not(.dark) .booking-detail-modal .btn-primary:hover {
+  background-color: #2563eb !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 25px -4px rgba(59, 130, 246, 0.45) !important;
+}
+
+
+
