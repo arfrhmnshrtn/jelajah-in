@@ -6,10 +6,15 @@ import InputField from '../../components/InputField';
 import CustomButton from '../../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
 
+// 🚀 IMPORT AXIOS CLIENT
+import axiosClient from '../../api/axiosClient'; 
+
 export default function LoginScreen({ navigation }: any) {
   const { isDarkMode, login } = useAppStore();
-  const [email, setEmail] = useState('ariefraa@gmail.com');
-  const [password, setPassword] = useState('12345678');
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   
@@ -25,6 +30,7 @@ export default function LoginScreen({ navigation }: any) {
     card: isDarkMode ? '#1E293B' : '#FFFFFF',
   };
 
+  // 🛠️ JALUR RESMI: Tembak API Server Arief
   const handleLogin = async () => {
     setErrorMsg('');
 
@@ -35,98 +41,75 @@ export default function LoginScreen({ navigation }: any) {
 
     setIsLoading(true);
 
-    // 🔴 SAKELAR PUSAT: Sudah di-set ke 'false' untuk langsung tes API Ngrok Arief
-    const USE_DUMMY_LOGIN = false; 
+    try {
+      const response = await axiosClient.post('/auth/login/user', {
+        email: email.trim(),
+        password: password
+      });
 
-    if (USE_DUMMY_LOGIN) {
-      // ==========================================
-      // JALUR 1: MODE DUMMY VIP 
-      // ==========================================
-      setTimeout(async () => {
-        const dummyUserData = {
-          id: "999",
-          name: "Geevan Alva", 
-          email: email.trim(),
-          token: "token_super_rahasia_123" 
-        };
+      const responseData = response.data;
 
-        try {
-          await AsyncStorage.setItem('userData', JSON.stringify(dummyUserData));
-          login(dummyUserData);
-          setWelcomeName(dummyUserData.name);
-          setShowSuccessModal(true);
-        } catch (err) {
-          setErrorMsg("Gagal menyimpan sesi login.");
-        } finally {
-          setIsLoading(false);
-        }
-      }, 1000);
-
-    } else {
-      // ==========================================
-      // JALUR 2: MODE PRODUKSI (API NGROK - AMAN)
-      // ==========================================
-      try {
-        // Otomatis mencari link di .env, kalau tidak ada, pakai link ngrok Arief
-        const baseUrl = process.env.EXPO_PUBLIC_API_URL || 'https://3651-114-10-100-230.ngrok-free.app/api';
-
-        const request = await fetch(`${baseUrl}/auth/login/user`, {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'ngrok-skip-browser-warning': 'true' // 🛡️ PENANGKAL WAJIB NGROK
-          },
-          body: JSON.stringify({ email: email.trim(), password }),
-        });
-
-        const rawText = await request.text();
-        let response;
-        try { response = JSON.parse(rawText); } catch (e) { throw new Error(`Server membalas format salah.`); }
-
-        if (!request.ok) {
-          setErrorMsg(response.message || 'Login ditolak oleh server Arief!');
-          setIsLoading(false);
-          return;
-        }
-
-        const fetchedName = response.user?.name || response.data?.name || response.data?.user?.name || response.name || 'Pengguna Jelajah';
-        const fetchedEmail = response.user?.email || response.data?.email || response.data?.user?.email || response.email || email;
-        const fetchedId = response.user?.id || response.data?.id || response.data?.user?.id || response.id || Date.now().toString();
-
-        const realToken = response.token 
-                       || response.data?.token 
-                       || response.access_token 
-                       || response.data?.access_token 
-                       || response.accessToken 
-                       || response.data?.accessToken
-                       || response.authorisation?.token;
-
-        if (!realToken) {
-          setErrorMsg(`Token hilang! Balasan Arief: ${rawText.substring(0, 150)}`);
-          setIsLoading(false);
-          return; 
-        }
-
-        const userDataFromServer = {
-          id: fetchedId.toString(),
-          name: fetchedName, 
-          email: fetchedEmail,
-          token: realToken 
-        };
-
-        await AsyncStorage.setItem('userData', JSON.stringify(userDataFromServer));
-        login(userDataFromServer);
-
-        setWelcomeName(fetchedName);
-        setShowSuccessModal(true);
-
-      } catch (error: any) {
-        setErrorMsg(`Error: ${error.message}`); 
-      } finally {
+      // Mengantisipasi jika server mengirimkan HTML darurat (bukan JSON)
+      if (typeof responseData === 'string' && responseData.includes('<!DOCTYPE html>')) {
+        setErrorMsg('Server Arief mengirim balasan HTML. Hubungi Arief untuk cek Ngrok!');
         setIsLoading(false);
+        return;
       }
+
+      // Ekstrak data diri
+      const fetchedName = responseData.user?.name || responseData.data?.name || responseData.data?.user?.name || responseData.name || 'Pengguna Jelajah';
+      const fetchedEmail = responseData.user?.email || responseData.data?.email || responseData.data?.user?.email || responseData.email || email;
+      const fetchedId = responseData.user?.id || responseData.data?.id || responseData.data?.user?.id || responseData.id || Date.now().toString();
+
+      // Ekstrak Token
+      const realToken = responseData.token 
+                     || responseData.data?.token 
+                     || responseData.access_token 
+                     || responseData.data?.access_token 
+                     || responseData.accessToken 
+                     || responseData.data?.accessToken;
+
+      if (!realToken) {
+        setErrorMsg('Login sukses di server, tapi format Token berubah. Cek Inspect Console!');
+        console.log('Struktur Response:', responseData);
+        setIsLoading(false);
+        return; 
+      }
+
+      const userDataFromServer = {
+        id: fetchedId.toString(),
+        name: fetchedName, 
+        email: fetchedEmail,
+        token: realToken 
+      };
+
+      await AsyncStorage.setItem('userData', JSON.stringify(userDataFromServer));
+      login(userDataFromServer);
+
+      setWelcomeName(fetchedName);
+      setShowSuccessModal(true);
+
+    } catch (error: any) {
+      console.log('Login Error:', error);
+      const serverError = error.response?.data?.message || 'Gagal terhubung ke server. Pastikan laptop Arief menyala dan internet aktif!';
+      setErrorMsg(serverError);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  // 🚀 JALUR BELAKANG: Dobrak Masuk Tanpa Server (Khusus Dev Mode)
+  const bypassLogin = async () => {
+    const dummyUser = { 
+      id: "999", 
+      name: "Geevan (Dev Mode)", 
+      email: "geevan@dev.com", 
+      token: "token_bypass_lokal" 
+    };
+    
+    await AsyncStorage.setItem('userData', JSON.stringify(dummyUser));
+    login(dummyUser);
+    navigation.replace('Home');
   };
 
   const handleProceedToHome = () => {
@@ -155,6 +138,11 @@ export default function LoginScreen({ navigation }: any) {
           <View style={{ marginTop: 10 }}>
             <CustomButton title="MASUK SEKARANG" onPress={handleLogin} isLoading={isLoading} iconName="log-in-outline" />
           </View>
+
+          {/* TOMBOL SAKTI UNTUK BYPASS SAAT SERVER OFF */}
+          <TouchableOpacity onPress={bypassLogin} style={styles.bypassBtn}>
+            <Text style={styles.bypassText}>🚀 [ DEV MODE ] PAKSA MASUK KE HOME</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.footer}>
@@ -196,6 +184,8 @@ const styles = StyleSheet.create({
   forgotPassword: { alignSelf: 'flex-end', marginBottom: 20, marginTop: -5 },
   errorText: { textAlign: 'center', marginBottom: 15, fontWeight: 'bold' },
   footer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 20 },
+  bypassBtn: { marginTop: 20, padding: 14, alignItems: 'center', backgroundColor: '#334155', borderRadius: 12, borderWidth: 1, borderColor: '#475569' },
+  bypassText: { color: '#F1F5F9', fontWeight: '800', fontSize: 13, letterSpacing: 0.5 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)', justifyContent: 'center', alignItems: 'center', padding: 24 },
   modalCard: { width: '100%', borderRadius: 24, padding: 30, alignItems: 'center', elevation: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.2, shadowRadius: 15 },
   iconCircle: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#10B981', justifyContent: 'center', alignItems: 'center', marginBottom: 20, borderWidth: 6, borderColor: 'rgba(16, 185, 129, 0.2)' },
