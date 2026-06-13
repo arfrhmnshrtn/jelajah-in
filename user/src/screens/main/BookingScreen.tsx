@@ -146,6 +146,11 @@ export default function BookingScreen({ route, navigation }: any) {
 
     if (matchedVoucher) {
       let discountValue = subTotal * 0.3; 
+      if (matchedVoucher.amount && Number(matchedVoucher.amount) > 0) {
+        discountValue = Number(matchedVoucher.amount);
+      } else if (matchedVoucher.percentage && Number(matchedVoucher.percentage) > 0) {
+        discountValue = subTotal * (Number(matchedVoucher.percentage) / 100);
+      }
     } else {
       setDiscount(0);
       setIsPromoApplied(false);
