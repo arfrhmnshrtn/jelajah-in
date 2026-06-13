@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Camera, Lock, Bell, Moon, Sun, User, Mail, Globe, Palette, Save, LogOut } from 'lucide-react';
+import { Camera, Lock, Moon, Sun, User, Mail, Globe, Palette, Save, LogOut } from 'lucide-react';
 import FeedbackModal from '../shared/FeedbackModal';
 import AccountTab from './AccountTab';
 import SecurityTab from './SecurityTab';
-import NotificationsTab from './NotificationsTab';
 import { useAppContext } from '../../context/AppContext';
 
 const Setting = () => {
@@ -66,10 +65,7 @@ const Setting = () => {
               <Lock size={18} />
               <span>Security & Password</span>
             </div>
-            <div className={`settings-nav-item ${activeTab === 'notifications' ? 'active' : ''}`} onClick={() => setActiveTab('notifications')}>
-              <Bell size={18} />
-              <span>Notifications</span>
-            </div>
+
           </div>
         </div>
 
@@ -86,8 +82,6 @@ const Setting = () => {
           )}
 
           {activeTab === 'security' && <SecurityTab />}
-
-          {activeTab === 'notifications' && <NotificationsTab />}
         </div>
       </div>
       <FeedbackModal 
