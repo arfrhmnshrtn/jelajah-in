@@ -26,6 +26,10 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     backgroundColor: '#F1F5F9', 
     marginTop: 10,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderStyle: 'dashed'
   },
   textWarning: {}
 });
