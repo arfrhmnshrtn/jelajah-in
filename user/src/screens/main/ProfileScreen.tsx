@@ -87,6 +87,10 @@ export default function ProfileScreen({ navigation }: any) {
         formData.append('email', editEmail);
         formData.append('_method', 'PATCH');
 
+        if (editPassword.trim() !== '') {
+          formData.append('password', editPassword);
+        }
+
       } catch (error: any) {
         console.log('Server offline:', error.message);
       }
