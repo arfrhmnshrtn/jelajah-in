@@ -7,3 +7,11 @@ interface MapDisplayProps {
   name: string;
   location: string;
 }
+
+export default function MapDisplay({ name }: MapDisplayProps) {
+  return (
+    <View>
+      
+    </View>
+  );
+}
