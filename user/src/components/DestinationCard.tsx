@@ -154,8 +154,8 @@ export default function DestinationCard({
           <View style={styles.headerRow}>
             <Text style={[styles.title, { color: themeColors.textTitle }]} numberOfLines={1}>{name}</Text>
             <View style={styles.ratingContainer}>
-              <Ionicons name="star" size={14} color="#F59E0B" />
-              <Text style={styles.ratingText}>4.8</Text>
+              
+              
             </View>
           </View>
 

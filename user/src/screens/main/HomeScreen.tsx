@@ -112,13 +112,13 @@ export default function HomeScreen({ navigation }: any) {
           category: "Pantai", // Langsung cocokkan dengan kategori di CategoryChip
           location: "Pesawaran, Lampung",
           price: "Rp 50.000",
-          image: "https://images.unsplash.com/photo-1596404764422-c313271703e7?q=80&w=500&auto=format&fit=crop",
-          images: ["https://images.unsplash.com/photo-1596404764422-c313271703e7?q=80&w=500&auto=format&fit=crop"],
+          image: "https://ik.imagekit.io/tvlk/blog/2024/08/shutterstock_2392736037.jpg?tr=q-70,c-at_max,w-1000,h-600",
+          images: ["https://ik.imagekit.io/tvlk/blog/2024/08/shutterstock_2392736037.jpg?tr=q-70,c-at_max,w-1000,h-600"],
           description: "Surga bawah laut tersembunyi di pesisir Lampung.",
           lat: -5.6738,
           lon: 105.2155,
           distance: "25.0 km",
-          rawDist: 25.0
+          
         },
         {
           id: "2",
@@ -126,13 +126,13 @@ export default function HomeScreen({ navigation }: any) {
           category: "Gunung", // Masuk kategori Gunung/Budaya
           location: "Bakauheni, Lampung",
           price: "Rp 15.000",
-          image: "https://images.unsplash.com/photo-1610531551694-df91bf0f1e00?q=80&w=500&auto=format&fit=crop",
-          images: ["https://images.unsplash.com/photo-1610531551694-df91bf0f1e00?q=80&w=500&auto=format&fit=crop"],
+          image: "https://travelspromo.com/wp-content/uploads/2020/02/Menara-Siger-yang-Berdiri-Kokoh-di-atas-Bukit.-Foto-Gmap-Khoirul-Anwar.jpg",
+          images: ["https://travelspromo.com/wp-content/uploads/2020/02/Menara-Siger-yang-Berdiri-Kokoh-di-atas-Bukit.-Foto-Gmap-Khoirul-Anwar.jpg"],
           description: "Titik nol Pulau Sumatera dengan pemandangan laut lepas.",
           lat: -5.8741,
           lon: 105.7535,
           distance: "85.0 km",
-          rawDist: 85.0
+         
         }
       ];
 
