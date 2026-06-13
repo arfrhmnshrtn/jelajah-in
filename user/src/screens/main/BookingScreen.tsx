@@ -151,6 +151,8 @@ export default function BookingScreen({ route, navigation }: any) {
       } else if (matchedVoucher.percentage && Number(matchedVoucher.percentage) > 0) {
         discountValue = subTotal * (Number(matchedVoucher.percentage) / 100);
       }
+
+      if (discountValue > subTotal) discountValue = subTotal;
     } else {
       setDiscount(0);
       setIsPromoApplied(false);
