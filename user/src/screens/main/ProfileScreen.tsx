@@ -48,6 +48,7 @@ export default function ProfileScreen({ navigation }: any) {
   };
 
   // 🚀 FUNGSI EKSEKUSI UPDATE KE BACKEND + UPDATE STATE + UPDATE ASYNCSTORAGE 🚀
+  // 🚀 JALUR BELAKANG: Offline Mode (Tanpa Backend Arief)
   const handleSave = async () => {
     if (!editName || !editEmail) {
       alert("Nama Lengkap dan Email wajib diisi!");
@@ -77,6 +78,11 @@ export default function ProfileScreen({ navigation }: any) {
         };
         await AsyncStorage.setItem('userData', JSON.stringify(updatedUserStorage));
       }
+
+      // 3. Reset form dan tutup halaman edit
+      setEditPassword('');
+      setIsEditing(false);
+      alert("Profil dan foto berhasil diperbarui (Dev Mode Offline)! ✨");
 
     } catch (error) {
       alert("Gagal memperbarui data profil.");
