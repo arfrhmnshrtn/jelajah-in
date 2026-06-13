@@ -11,8 +11,10 @@ interface MapDisplayProps {
 
 export default function MapDisplay({ name }: MapDisplayProps) {
   return (
-    <View>
-      
+    <View style={styles.mapContainer}>
+      <Text style={styles.textWarning}>
+        (Peta interaktif hanya tersedia di aplikasi Android/iOS)
+      </Text>
     </View>
   );
 }
