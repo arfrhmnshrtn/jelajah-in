@@ -153,6 +153,8 @@ export default function DetailScreen({ route, navigation }: any) {
         {item.latitude && item.longitude && (
           <View style={styles.mapSection}>
             <Text style={[styles.sectionTitle, { color: theme.text, marginTop: 24 }]}>Lokasi Peta</Text>
+            <View style={styles.mapContainer}>
+            </View>
           </View>
         )}
       </ScrollView>
