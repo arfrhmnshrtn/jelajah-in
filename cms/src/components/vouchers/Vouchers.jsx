@@ -5,8 +5,10 @@ import VoucherModal from './VoucherModal';
 import VoucherTable from './VoucherTable';
 import DeleteConfirmModal from '../shared/DeleteConfirmModal';
 import FeedbackModal from '../shared/FeedbackModal';
+import { useAppContext } from '../../context/AppContext';
 
-const Vouchers = ({ vouchers, setVouchers, users, bookings, t }) => {
+const Vouchers = () => {
+  const { vouchers, setVouchers, users, bookings, t } = useAppContext();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [usageCounts, setUsageCounts] = useState({});
@@ -21,7 +23,10 @@ const Vouchers = ({ vouchers, setVouchers, users, bookings, t }) => {
         const id = v.id || v._id;
         try {
           const response = await fetch(`${import.meta.env.VITE_API_URL}/vouchers/${id}/usages`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { 
+              'Authorization': `Bearer ${token}`,
+              'ngrok-skip-browser-warning': 'true'
+            }
           });
           if (response.ok) {
             const result = await response.json();
@@ -102,11 +107,13 @@ const Vouchers = ({ vouchers, setVouchers, users, bookings, t }) => {
         let savedVoucher = null;
         try {
           const token = localStorage.getItem('token');
+          console.log(`Mengirim permintaan PATCH ke: ${url}`);
           const response = await fetch(url, {
             method: 'PATCH',
             headers: { 
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
+              'Authorization': `Bearer ${token}`,
+              'ngrok-skip-browser-warning': 'true'
             },
             body: JSON.stringify(apiData)
           });
@@ -114,9 +121,12 @@ const Vouchers = ({ vouchers, setVouchers, users, bookings, t }) => {
           if (response.ok) {
             const result = await response.json();
             savedVoucher = result.data || result;
+          } else {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('API PATCH failed with status:', response.status, errorData);
           }
         } catch (err) {
-          console.warn('API PATCH failed, simulating locally:', err);
+          console.error('API PATCH failed, simulating locally:', err);
         }
 
         if (!savedVoucher) {
@@ -135,7 +145,8 @@ const Vouchers = ({ vouchers, setVouchers, users, bookings, t }) => {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'ngrok-skip-browser-warning': 'true'
           },
           body: JSON.stringify(apiData)
         });
@@ -170,18 +181,25 @@ const Vouchers = ({ vouchers, setVouchers, users, bookings, t }) => {
 
     try {
       const token = localStorage.getItem('token');
+      console.log(`Mengirim permintaan DELETE ke: ${import.meta.env.VITE_API_URL}/vouchers/${voucherId}`);
+      
       const response = await fetch(`${import.meta.env.VITE_API_URL}/vouchers/${voucherId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'ngrok-skip-browser-warning': 'true',
+          'Content-Type': 'application/json'
         }
       });
       
       if (response.ok) {
         deletedSuccessfully = true;
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('API DELETE failed with status:', response.status, errorData);
       }
     } catch (error) {
-      console.warn('API DELETE failed, simulating locally:', error);
+      console.error('API DELETE failed, simulating locally:', error);
     }
 
     if (!deletedSuccessfully) {
@@ -213,7 +231,7 @@ const Vouchers = ({ vouchers, setVouchers, users, bookings, t }) => {
       <div className="section-header" style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 style={{ fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px' }}>Promo & Voucher</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginTop: '4px' }}>Kelola kampanye diskon liburan JELAJAH.IN</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginTop: '4px' }}>Kelola diskon liburan JELAJAH.IN</p>
         </div>
         <button className="btn btn-primary" onClick={() => handleOpenModal()} style={{ padding: '14px 28px' }}>
           <Plus size={20} /> Tambah Voucher Baru
