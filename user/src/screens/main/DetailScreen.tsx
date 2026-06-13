@@ -163,6 +163,7 @@ export default function DetailScreen({ route, navigation }: any) {
                   longitudeDelta: 0.05,
                 }}
               >
+                <Marker coordinate={{ latitude: 0, longitude: 0 }} />
               </MapView>
             </View>
           </View>
