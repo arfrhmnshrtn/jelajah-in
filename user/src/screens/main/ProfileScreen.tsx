@@ -69,6 +69,16 @@ export default function ProfileScreen({ navigation }: any) {
     } catch (err) {
       console.log("Gagal menyimpan ke memori lokal:", err);
     }
+
+    if (currentUser && currentUser.token) {
+      try {
+        // Blok request server akan diletakkan di sini
+      } catch (error: any) {
+        console.log('Server offline:', error.message);
+      }
+    } else {
+      alert("Profil berhasil diperbarui secara lokal.");
+    }
   };
 
   // Fungsi eksekusi saat tombol keluar ditekan di Pop-up
