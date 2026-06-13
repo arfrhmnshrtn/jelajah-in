@@ -153,7 +153,7 @@ export default function DetailScreen({ route, navigation }: any) {
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Deskripsi</Text>
         <Text style={[styles.description, { color: theme.textSub }]}>{item.description || "Tidak ada deskripsi tersedia untuk wisata ini."}</Text>
 
-        {item.latitude && item.longitude && !isWeb && (
+        {item.latitude && item.longitude && (
           <View style={styles.mapSection}>
             <Text style={[styles.sectionTitle, { color: theme.text, marginTop: 24 }]}>Lokasi Peta</Text>
             <View style={styles.mapContainer}>
@@ -176,13 +176,6 @@ export default function DetailScreen({ route, navigation }: any) {
                 />
               </MapView>
             </View>
-          </View>
-        )}
-
-        // 4. (Opsional) Tambahkan pesan untuk pengguna web
-        {isWeb && (
-          <View style={styles.mapSection}>
-            <Text style={[styles.sectionTitle, { color: theme.text }]}>Lokasi Peta (Hanya tersedia di aplikasi mobile)</Text>
           </View>
         )}
       </ScrollView>
