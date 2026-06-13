@@ -66,8 +66,20 @@ export default function ProfileScreen({ navigation }: any) {
             } 
           : null
       }));
+      
+      // 2. Simpan permanen ke memori HP (Offline Mode)
+      if (currentUser) {
+        const updatedUserStorage = {
+          ...currentUser,
+          name: editName,
+          email: editEmail,
+          profilePictureUrl: editPicUrl
+        };
+        await AsyncStorage.setItem('userData', JSON.stringify(updatedUserStorage));
+      }
+
     } catch (error) {
-      alert("Gagal memperbarui UI profil.");
+      alert("Gagal memperbarui data profil.");
     }
   };
 
