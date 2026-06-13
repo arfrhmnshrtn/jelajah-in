@@ -125,46 +125,7 @@ export default function BookingScreen({ route, navigation }: any) {
 
   const handleApplyPromo = () => {
     if (!promoCode.trim()) {
-      Alert.alert("Perhatian", "Silakan masukkan kode voucher terlebih dahulu.");
       return;
-    }
-
-    // 🚀 --- START: KODE DUMMY SEMENTARA UNTUK SCREENSHOT ---
-    if (promoCode.trim().toUpperCase() === 'PROMODOSEN') {
-      const nilaiDiskon = 15000; // Diskon Rp 15.000
-      
-      // Cegah diskon melebihi harga total
-      const finalDiscount = nilaiDiskon > subTotal ? subTotal : nilaiDiskon;
-      
-      setDiscount(finalDiscount);
-      setIsPromoApplied(true);
-      Alert.alert("Berhasil!", "Voucher PROMODOSEN berhasil digunakan! Anda hemat Rp 15.000 ✨");
-      return; // 🛑 RETURN di sini agar tidak lanjut mengecek ke data server
-    }
-    // 🚀 --- END: KODE DUMMY ---
-
-    // Logika asli pencarian voucher dari server
-    const matchedVoucher = availableVouchers.find(
-      (v) => v.code.toUpperCase() === promoCode.trim().toUpperCase()
-    );
-
-    if (matchedVoucher) {
-      let discountValue = subTotal * 0.3; 
-      if (matchedVoucher.amount && Number(matchedVoucher.amount) > 0) {
-        discountValue = Number(matchedVoucher.amount);
-      } else if (matchedVoucher.percentage && Number(matchedVoucher.percentage) > 0) {
-        discountValue = subTotal * (Number(matchedVoucher.percentage) / 100);
-      }
-
-      if (discountValue > subTotal) discountValue = subTotal;
-
-      setDiscount(discountValue);
-      setIsPromoApplied(true);
-      Alert.alert("Berhasil!", `Kode voucher ${matchedVoucher.code.toUpperCase()} berhasil terpasang.`);
-    } else {
-      setDiscount(0);
-      setIsPromoApplied(false);
-      Alert.alert("Gagal", "Kode voucher tidak valid atau kuota habis.");
     }
   };
 
