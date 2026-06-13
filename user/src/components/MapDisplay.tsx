@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 
 interface MapDisplayProps {
   latitude: string;
