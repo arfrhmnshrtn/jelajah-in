@@ -140,10 +140,15 @@ export default function BookingScreen({ route, navigation }: any) {
     }
     // 🚀 --- END: KODE DUMMY ---
 
-    // Logika asli pencarian voucher dari server
     const matchedVoucher = availableVouchers.find(
       (v) => v.code.toUpperCase() === promoCode.trim().toUpperCase()
     );
+
+    if (matchedVoucher) {
+      
+    } else {
+      
+    }
   };
 
   const handlePayment = async () => {
