@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Delete, Body, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Patch, Body, Param, UseGuards, Req } from '@nestjs/common';
 import { VouchersService } from './vouchers.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
+import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -37,6 +38,16 @@ export class VouchersController {
   @Delete(':id')
   deleteVoucher(@Param('id') id: string) {
     return this.vouchersService.deleteVoucher(id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Patch(':id')
+  updateVoucher(
+    @Param('id') id: string,
+    @Body() updateVoucherDto: UpdateVoucherDto,
+  ) {
+    return this.vouchersService.updateVoucher(id, updateVoucherDto);
   }
 
   @UseGuards(JwtAuthGuard)
