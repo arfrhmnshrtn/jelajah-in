@@ -31,5 +31,9 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
     borderStyle: 'dashed'
   },
-  textWarning: {}
+  textWarning: {
+    textAlign: 'center', 
+    color: '#64748B',
+    paddingHorizontal: 20
+  }
 });
