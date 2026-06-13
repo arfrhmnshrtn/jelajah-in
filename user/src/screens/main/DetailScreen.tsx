@@ -11,7 +11,8 @@ import {
   Modal, 
   ActivityIndicator, 
   Alert,
-  Linking 
+  Linking,
+  Platform
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppStore } from '../../store/useAppStore';
