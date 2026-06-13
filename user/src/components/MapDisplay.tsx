@@ -1,8 +1,17 @@
 import React from 'react';
+import { View } from 'react-native';
 
 interface MapDisplayProps {
   latitude: string;
   longitude: string;
   name: string;
   location: string;
+}
+
+export default function MapDisplay({ latitude, longitude, name, location }: MapDisplayProps) {
+  return (
+    <View>
+      
+    </View>
+  );
 }
