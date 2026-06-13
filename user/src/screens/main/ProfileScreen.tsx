@@ -54,39 +54,6 @@ export default function ProfileScreen({ navigation }: any) {
       alert("Nama Lengkap dan Email wajib diisi!");
       return;
     }
-
-    try {
-      // 1. Update data UI secara real-time
-      useAppStore.setState((state) => ({
-        currentUser: state.currentUser 
-          ? { 
-              ...state.currentUser, 
-              name: editName, 
-              email: editEmail,
-              profilePictureUrl: editPicUrl 
-            } 
-          : null
-      }));
-      
-      // 2. Simpan permanen ke memori HP (Offline Mode)
-      if (currentUser) {
-        const updatedUserStorage = {
-          ...currentUser,
-          name: editName,
-          email: editEmail,
-          profilePictureUrl: editPicUrl
-        };
-        await AsyncStorage.setItem('userData', JSON.stringify(updatedUserStorage));
-      }
-
-      // 3. Reset form dan tutup halaman edit
-      setEditPassword('');
-      setIsEditing(false);
-      alert("Profil dan foto berhasil diperbarui (Dev Mode Offline)! ✨");
-
-    } catch (error) {
-      alert("Gagal memperbarui data profil.");
-    }
   };
 
   // Fungsi eksekusi saat tombol keluar ditekan di Pop-up
